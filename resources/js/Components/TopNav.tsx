@@ -6,6 +6,10 @@ import { CiDark, CiLight, CiUser } from 'react-icons/ci';
 export default function TopNav({ user }: { user: User }) {
     const { colorScheme, setColorScheme } = useMantineColorScheme();
 
+    const handleLogout = () => {
+        router.post(route('sign.out'));
+    };
+
     return (
         <>
             <div className="pr-4">
@@ -62,10 +66,7 @@ export default function TopNav({ user }: { user: User }) {
                             </Link>
                         </Menu.Item>
                         <Menu.Divider />
-                        <Menu.Item
-                            color="red"
-                            onClick={() => router.post(route('logout'))}
-                        >
+                        <Menu.Item color="red" onClick={handleLogout}>
                             Logout
                         </Menu.Item>
                     </Menu.Dropdown>
