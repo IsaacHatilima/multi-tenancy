@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
@@ -23,6 +24,11 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'tenancy_db_name',
             'plan',
         ];
+    }
+
+    public function domain(): HasOne
+    {
+        return $this->hasOne(Domain::class);
     }
 
     protected function casts(): array
