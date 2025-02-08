@@ -23,8 +23,8 @@ use Stancl\Tenancy\Middleware\ScopeSessions;
 Route::middleware([
     InitializeTenancyBySubdomain::class,
     'web',
-    PreventAccessFromCentralDomains::class,
     ScopeSessions::class,
+    PreventAccessFromCentralDomains::class,
 ])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');

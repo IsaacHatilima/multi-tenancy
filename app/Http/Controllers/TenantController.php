@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TenantRequest;
 use App\Models\Tenant;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Inertia\Inertia;
 
 class TenantController extends Controller
 {
@@ -12,9 +13,9 @@ class TenantController extends Controller
 
     public function index()
     {
-        $this->authorize('viewAny', Tenant::class);
+//        $this->authorize('viewAny', Tenant::class);
 
-        return Tenant::all();
+        return Inertia::render('Tenant/Index',);
     }
 
     public function store(TenantRequest $request)

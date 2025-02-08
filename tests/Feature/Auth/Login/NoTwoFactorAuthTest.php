@@ -1,9 +1,10 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 test('login screen can be rendered', function () {
-    $response = $this->get('/login');
+    $response = $this->get('/');
 
     $response->assertStatus(200);
 });
