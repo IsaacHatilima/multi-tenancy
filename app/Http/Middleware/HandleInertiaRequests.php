@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
                 'profile' => $request->user()?->profile,
                 'social_auth' => $request->user()?->password === null,
             ],
+            'tenant' => tenant() ?: null,
             'socialAuth' => [
                 'google' => config('auth.socialAuth.google'),
                 'github' => config('auth.socialAuth.github'),

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use Stancl\Tenancy\Middleware\ScopeSessions;
@@ -23,12 +22,11 @@ use Stancl\Tenancy\Middleware\ScopeSessions;
 Route::middleware([
     InitializeTenancyBySubdomain::class,
     'web',
-    ScopeSessions::class,
     PreventAccessFromCentralDomains::class,
+    ScopeSessions::class,
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->middleware(['auth'])->name('dashboard');
+
+    require __DIR__.'/guest-common.php';
 
     require __DIR__.'/protected-common.php';
 });

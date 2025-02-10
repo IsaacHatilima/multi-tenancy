@@ -8,7 +8,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest'])->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
@@ -22,6 +22,9 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/', [LoginController::class, 'create'])
         ->name('login');
+
+    Route::post('/', [LoginController::class, 'authenticate'])
+        ->name('login.post');
 
     Route::get('/two-factor-challenge', function () {
         return Inertia::render('Auth/TwoFactorChallenge');
