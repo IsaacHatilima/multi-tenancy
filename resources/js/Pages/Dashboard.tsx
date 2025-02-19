@@ -1,14 +1,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Tenant } from '@/types/tenant';
 import { Head, usePage } from '@inertiajs/react';
 import { Badge, Card, Group, Text } from '@mantine/core';
-import { useEffect } from 'react';
 
 export default function Dashboard() {
-    const tenant = usePage().props.tenant;
+    const tenant: Tenant = usePage().props.tenant;
 
-    useEffect(() => {
-        // console.log(tenant.id);
-    }, []);
     return (
         <AuthenticatedLayout
             header={
