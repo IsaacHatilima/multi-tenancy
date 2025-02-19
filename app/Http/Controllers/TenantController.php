@@ -13,9 +13,11 @@ class TenantController extends Controller
 
     public function index()
     {
-//        $this->authorize('viewAny', Tenant::class);
+        //        $this->authorize('viewAny', Tenant::class);
 
-        return Inertia::render('Tenant/Index',);
+        return Inertia::render('Tenant/Index', [
+            'tenants' => Tenant::with('domain')->paginate(10),
+        ]);
     }
 
     public function store(TenantRequest $request)

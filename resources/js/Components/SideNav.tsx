@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { Box, NavLink } from '@mantine/core';
 import React from 'react';
-import { MdSpaceDashboard } from 'react-icons/md';
+import { MdSpaceDashboard, MdSupervisorAccount } from 'react-icons/md';
 
 type MenuItem = {
     icon: React.ElementType;
@@ -16,6 +16,12 @@ export default function SideNav() {
             icon: MdSpaceDashboard,
             label: 'Dashboard',
             href: route('dashboard'),
+            children: [],
+        },
+        {
+            icon: MdSupervisorAccount,
+            label: 'Tenants',
+            href: route('tenants'),
             children: [],
         },
     ];

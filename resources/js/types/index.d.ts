@@ -1,4 +1,4 @@
-import { Tenant } from '@/types/tenant';
+import { PaginatedTenants, Tenant } from '@/types/tenant';
 import { User } from '@/types/user';
 import { Config } from 'ziggy-js';
 
@@ -10,5 +10,6 @@ export type PageProps<
         social_auth: boolean;
     };
     tenant: Tenant;
+    paginatedTenants: PaginatedTenants;
     ziggy: Config & { location: string };
 };

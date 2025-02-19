@@ -1,4 +1,4 @@
-import { User } from '@/types';
+import { User } from '@/types/user';
 import { Link, router } from '@inertiajs/react';
 import { ActionIcon, Menu, useMantineColorScheme } from '@mantine/core';
 import { CiDark, CiLight, CiUser } from 'react-icons/ci';

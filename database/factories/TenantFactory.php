@@ -27,9 +27,13 @@ class TenantFactory extends Factory
                 'tenancy_db_name' => config('tenancy.database.prefix').$tenant->id,
             ]);
 
-            $tenant->run(function () {
-                User::factory()->create();
+            $tenant->run(function ($tenant) {
+                User::factory()->create(['tenant_id' => $tenant->id]);
             });
+
+            $tenant->domains()->create([
+                'domain' => 'domain-'.substr($tenant->id, -3),
+            ]);
         });
     }
 }

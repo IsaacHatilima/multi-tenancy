@@ -1,4 +1,4 @@
-import { User } from '@/types';
+import { User } from '@/types/user';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Button, Select, TextInput } from '@mantine/core';
 import { DateInput } from '@mantine/dates';

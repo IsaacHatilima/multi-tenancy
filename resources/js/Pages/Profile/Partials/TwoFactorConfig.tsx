@@ -1,7 +1,7 @@
 import ConfirmTwoFactor from '@/Pages/Profile/Partials/ConfirmTwoFactor';
 import DeactivateTwoFactor from '@/Pages/Profile/Partials/DeactivateTwoFactor';
 import EnableTowFactor from '@/Pages/Profile/Partials/EnableTowFactor';
-import { User } from '@/types';
+import { User } from '@/types/user';
 import { router, usePage } from '@inertiajs/react';
 import { Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';

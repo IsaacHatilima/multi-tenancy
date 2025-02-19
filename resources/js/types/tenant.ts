@@ -7,6 +7,28 @@ export interface Tenant {
     updated_at: string;
 }
 
+export interface PaginatedTenants {
+    current_page: number;
+    data: Tenant[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: PaginationLink[];
+    next_page_url: string | URL;
+    path: string;
+    per_page: number;
+    prev_page_url: string | URL;
+    to: number;
+    total: number;
+}
+
+export interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
 export interface Domain {
     id: string;
     tenant_id: string;
