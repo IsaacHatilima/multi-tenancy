@@ -1,7 +1,18 @@
 export interface Tenant {
     id: string;
     tenancy_db_name: string;
-    plan: string;
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    zip: string;
+    status: string;
+    tenant_number: string;
+    slug: string;
+    contact_name: string;
+    contact_email: string;
+    contact_phone: string;
     domain: Domain;
     created_at: string;
     updated_at: string;

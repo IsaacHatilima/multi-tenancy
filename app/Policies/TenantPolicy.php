@@ -10,9 +10,15 @@ class TenantPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool {}
+    public function viewAny(User $user): bool
+    {
+        return tenant() == null;
+    }
 
-    public function view(User $user, Tenant $tenant): bool {}
+    public function view(User $user, Tenant $tenant): bool
+    {
+        return tenant() == null;
+    }
 
     public function create(User $user): bool {}
 

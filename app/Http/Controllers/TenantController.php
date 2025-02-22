@@ -5,18 +5,46 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TenantRequest;
 use App\Models\Tenant;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TenantController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    public function index(Request $request)
     {
-        //        $this->authorize('viewAny', Tenant::class);
+        $this->authorize('viewAny', Tenant::class);
 
+        $query = Tenant::query()->with('domain');
+
+        if ($request->filled('tenant_number')) {
+            $query->where('tenant_number', 'ILIKE', '%'.$request->tenant_number.'%');
+        }
+
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%'.$request->name.'%');
+        }
+
+        if ($request->filled('domain')) {
+            $query->whereHas('domain', function ($q) use ($request) {
+                $q->where('name', 'like', '%'.$request->domain.'%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('contact_name')) {
+            $query->where('contact_name', 'like', '%'.$request->contact_name.'%');
+        }
+
+        $query->orderBy('created_at', $request->sorting === 'ascending' ? 'asc' : 'desc');
+
+        // Paginate results and keep query string (preserves search filters)
         return Inertia::render('Tenant/Index', [
-            'tenants' => Tenant::with('domain')->paginate(10),
+            'tenants' => $query->paginate(10)->withQueryString(),
         ]);
     }
 
@@ -27,11 +55,13 @@ class TenantController extends Controller
         return Tenant::create($request->validated());
     }
 
-    public function show(Tenant $tenant)
+    public function show($slug)
     {
-        $this->authorize('view', $tenant);
+        $tenant = Tenant::where('slug', $slug)->firstOrFail();
 
-        return $tenant;
+        return Inertia::render('Tenant/TenantDetail', [
+            'tenant' => $tenant,
+        ]);
     }
 
     public function update(TenantRequest $request, Tenant $tenant)

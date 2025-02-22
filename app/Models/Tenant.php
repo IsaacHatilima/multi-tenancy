@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
@@ -22,8 +23,32 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'created_at',
             'updated_at',
             'tenancy_db_name',
-            'plan',
+            'status',
+            'name',
+            'address',
+            'city',
+            'state',
+            'country',
+            'zip',
+            'contact_email',
+            'contact_phone',
+            'contact_name',
+            'tenant_number',
+            'slug',
         ];
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($tenant) {
+            $tenant->slug = Str::slug($tenant->name);
+        });
+
+        static::updating(function ($tenant) {
+            $tenant->slug = Str::slug($tenant->name);
+        });
     }
 
     public function domain(): HasOne

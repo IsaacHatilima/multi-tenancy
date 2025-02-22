@@ -16,10 +16,18 @@ class CreateTenantsTable extends Migration
         Schema::create('tenants', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('tenancy_db_name')->nullable();
-            $table->string('plan');
-
-            // your custom columns may go here
-
+            $table->string('tenant_number');
+            $table->string('slug');
+            $table->string('name');
+            $table->string('address');
+            $table->string('city');
+            $table->string('state');
+            $table->string('zip');
+            $table->string('country');
+            $table->string('contact_name');
+            $table->string('contact_email');
+            $table->string('contact_phone');
+            $table->enum('status', ['active', 'in-active'])->default('active');
             $table->timestamps();
             $table->json('data')->nullable();
         });

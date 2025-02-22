@@ -32,7 +32,10 @@ export default function SideNav() {
             href={item.href}
             active={
                 window.location.pathname ===
-                new URL(item.href, window.location.origin).pathname
+                    new URL(item.href, window.location.origin).pathname ||
+                window.location.pathname.startsWith(
+                    new URL(item.href, window.location.origin).pathname + '/',
+                )
             }
             label={item.label}
             leftSection={<item.icon size="1rem" />}
