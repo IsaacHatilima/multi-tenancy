@@ -20,9 +20,15 @@ class TenantPolicy
         return tenant() == null;
     }
 
-    public function create(User $user): bool {}
+    public function create(User $user): bool
+    {
+        return tenant() == null;
+    }
 
-    public function update(User $user, Tenant $tenant): bool {}
+    public function update(User $user, Tenant $tenant): bool
+    {
+        return tenant() == null;
+    }
 
     public function delete(User $user, Tenant $tenant): bool {}
 

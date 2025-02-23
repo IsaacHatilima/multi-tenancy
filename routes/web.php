@@ -11,6 +11,7 @@ foreach (config('tenancy.central_domains') as $domain) {
             Route::middleware('auth')->group(function () {
                 Route::get('/tenants', [TenantController::class, 'index'])->name('tenants');
                 Route::get('/tenants/{slug}', [TenantController::class, 'show'])->name('tenants.show');
+                Route::put('/tenants/{tenant}', [TenantController::class, 'update'])->name('tenants.update');
             });
 
             require __DIR__.'/protected-common.php';
