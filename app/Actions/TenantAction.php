@@ -16,6 +16,7 @@ class TenantAction
     {
         $tenant->update([
             'name' => strtoupper($request->name),
+            'status' => $request->status,
             'address' => ucwords($request->address),
             'city' => ucwords($request->city),
             'state' => ucwords($request->state),
@@ -27,5 +28,10 @@ class TenantAction
         ]);
 
         return $tenant->refresh();
+    }
+
+    public function delete_tenant($tenant): void
+    {
+        $tenant->delete();
     }
 }

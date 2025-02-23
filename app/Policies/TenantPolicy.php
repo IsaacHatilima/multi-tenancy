@@ -30,7 +30,10 @@ class TenantPolicy
         return tenant() == null;
     }
 
-    public function delete(User $user, Tenant $tenant): bool {}
+    public function delete(User $user, Tenant $tenant): bool
+    {
+        return tenant() == null;
+    }
 
     public function restore(User $user, Tenant $tenant): bool {}
 

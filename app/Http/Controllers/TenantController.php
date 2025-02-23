@@ -83,12 +83,16 @@ class TenantController extends Controller
         return Redirect::route('tenants.update', $updatedTenant->slug);
     }
 
-    public function destroy(Tenant $tenant)
+    public function destroy(Request $request, Tenant $tenant)
     {
         $this->authorize('delete', $tenant);
 
-        $tenant->delete();
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+        ]);
 
-        return response()->json();
+        $this->tenantAction->delete_tenant($tenant);
+
+        return Redirect::route('tenants');
     }
 }

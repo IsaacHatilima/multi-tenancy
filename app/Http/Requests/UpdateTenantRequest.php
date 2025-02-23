@@ -17,7 +17,6 @@ class UpdateTenantRequest extends FormRequest
                 'name' => ['required', 'min:3', 'max:50', Rule::unique('tenants')->ignore($id)],
                 'zip' => ['required', 'regex:/^\d+$/', 'min:3', 'max:50'],
                 'contact_phone' => ['required', 'regex:/^\d+$/', 'min:7', 'max:50'],
-                'status' => ['sometimes', 'min:3', 'max:50'],
             ],
             StringRule::rules('address', true),
             StringRule::rules('city', true),
@@ -25,6 +24,7 @@ class UpdateTenantRequest extends FormRequest
             StringRule::rules('country', true),
             StringRule::rules('contact_name', true),
             StringRule::rules('contact_email', true),
+            StringRule::rules('status', true),
         );
     }
 
@@ -37,6 +37,7 @@ class UpdateTenantRequest extends FormRequest
             StringRule::messages('country', true),
             StringRule::messages('contact name', true),
             StringRule::messages('contact email', true),
+            StringRule::messages('status', true),
             [
                 'name.required' => 'Tenant Name is required.',
                 'name.min' => 'Tenant Name must be at least 3 characters.',
@@ -52,10 +53,6 @@ class UpdateTenantRequest extends FormRequest
                 'contact_phone.min' => 'Phone Number must be at least 3 characters.',
                 'contact_phone.max' => 'Phone Number may not be greater than 50 characters.',
                 'contact_phone.integer' => 'Phone Number must be numeric.',
-
-                'status.sometimes' => 'Status is required.',
-                'status.min' => 'Status must be at least 3 characters.',
-                'status.max' => 'Status may not be greater than 50 characters.',
             ]
         );
     }
