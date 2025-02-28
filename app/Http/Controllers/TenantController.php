@@ -26,35 +26,8 @@ class TenantController extends Controller
     {
         $this->authorize('viewAny', Tenant::class);
 
-        $query = Tenant::query()->with('domain');
-
-        if ($request->filled('tenant_number')) {
-            $query->where('tenant_number', 'ILIKE', '%'.$request->tenant_number.'%');
-        }
-
-        if ($request->filled('name')) {
-            $query->where('name', 'like', '%'.$request->name.'%');
-        }
-
-        if ($request->filled('domain')) {
-            $query->whereHas('domain', function ($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->domain.'%');
-            });
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('contact_name')) {
-            $query->where('contact_name', 'like', '%'.$request->contact_name.'%');
-        }
-
-        $query->orderBy('created_at', $request->sorting === 'ascending' ? 'asc' : 'desc');
-
-        // Paginate results and keep query string (preserves search filters)
         return Inertia::render('Tenant/Index', [
-            'tenants' => $query->paginate(10)->withQueryString(),
+            'tenants' => $this->tenantAction->get_tenants($request),
         ]);
     }
 

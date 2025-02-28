@@ -10,17 +10,12 @@ import {
     Table,
     TextInput,
 } from '@mantine/core';
-import dayjs from 'dayjs';
 import { debounce } from 'lodash';
 import { useEffect } from 'react';
 
 function Index() {
     const paginatedTenants: PaginatedTenants = usePage().props
         .tenants as PaginatedTenants;
-
-    const formatDate = (dateString: string) => {
-        return dayjs(dateString).format('YYYY-MM-DD HH:mm:ss');
-    };
 
     const rows = paginatedTenants.data.map((tenant: Tenant) => (
         <Table.Tr key={tenant.id}>
@@ -33,7 +28,7 @@ function Index() {
             <Table.Td>{tenant.domain.domain}</Table.Td>
             <Table.Td>
                 <Badge
-                    color={tenant.status == 'active' ? 'green' : 'red'}
+                    color={tenant.status == 'ACTIVE' ? 'green' : 'red'}
                     variant="outline"
                     size="sm"
                 >
@@ -41,7 +36,7 @@ function Index() {
                 </Badge>
             </Table.Td>
             <Table.Td>{tenant.contact_name}</Table.Td>
-            <Table.Td>{formatDate(tenant.created_at)}</Table.Td>
+            <Table.Td>{tenant.created_at}</Table.Td>
         </Table.Tr>
     ));
 
@@ -80,7 +75,7 @@ function Index() {
     return (
         <AuthenticatedLayout>
             <Head title="Tenants" />
-
+            TODO: Add create tenant component
             <Card shadow="sm" padding="lg" radius="md">
                 <div>
                     <Table striped highlightOnHover>

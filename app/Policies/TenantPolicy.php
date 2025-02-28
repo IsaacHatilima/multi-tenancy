@@ -34,8 +34,4 @@ class TenantPolicy
     {
         return tenant() == null;
     }
-
-    public function restore(User $user, Tenant $tenant): bool {}
-
-    public function forceDelete(User $user, Tenant $tenant): bool {}
 }

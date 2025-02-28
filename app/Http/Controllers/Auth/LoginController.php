@@ -22,6 +22,9 @@ class LoginController extends Controller
 
     public function authenticate(Request $request)
     {
+        // TODO: Create Login request
+        //       move logic to action class
+        //       add email 2FA
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
