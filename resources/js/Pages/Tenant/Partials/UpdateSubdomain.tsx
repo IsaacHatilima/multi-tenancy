@@ -16,10 +16,6 @@ function UpdateSubdomain({ tenant }: { tenant: Tenant }) {
         open();
         put(route('domains.update', tenant.domain.id), {
             onSuccess: () => {
-                router.visit(route('tenants.update', tenant.id), {
-                    only: ['tenant'],
-                });
-
                 notifications.show({
                     title: 'Success',
                     message: 'Tenant Subdomain has been updated successfully!',
@@ -28,6 +24,9 @@ function UpdateSubdomain({ tenant }: { tenant: Tenant }) {
             },
             onFinish: () => {
                 close();
+                router.visit(route('tenants.show', tenant.id), {
+                    only: ['tenant'],
+                });
             },
         });
     };

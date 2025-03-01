@@ -2,6 +2,8 @@
 
 [RILT Starter Template](https://github.com/IsaacHatilima/multi-tenancy)
 
+## Project Status: Active Development
+
 ## About The Project
 
 This project is a comprehensive starter template designed to simplify and accelerate the development of modern web

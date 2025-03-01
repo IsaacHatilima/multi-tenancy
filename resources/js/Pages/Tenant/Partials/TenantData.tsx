@@ -38,10 +38,6 @@ function TenantData({ tenant }: { tenant: Tenant }) {
         open();
         put(route('tenants.update', tenant.id), {
             onSuccess: () => {
-                router.visit(route('tenants.update', tenant.id), {
-                    only: ['tenant'],
-                });
-
                 notifications.show({
                     title: 'Success',
                     message: 'Tenant has been updated successfully!',
@@ -51,6 +47,9 @@ function TenantData({ tenant }: { tenant: Tenant }) {
             onError: () => {},
             onFinish: () => {
                 close();
+                router.visit(route('tenants.show', tenant.id), {
+                    only: ['tenant'],
+                });
             },
         });
     };
