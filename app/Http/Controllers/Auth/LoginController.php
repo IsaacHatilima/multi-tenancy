@@ -35,7 +35,7 @@ class LoginController extends Controller
 
             session(['tenant_id' => tenant('id')]);
 
-            return redirect()->route('dashboard');
+            return redirect()->intended(route('dashboard'));
         }
 
         return back()->withErrors([

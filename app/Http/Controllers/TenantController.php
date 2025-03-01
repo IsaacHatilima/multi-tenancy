@@ -35,7 +35,9 @@ class TenantController extends Controller
     {
         $this->authorize('create', Tenant::class);
 
-        return Tenant::create($request->validated());
+        $tenant = $this->tenantAction->create_tenant($request);
+
+        return Redirect::route('tenants.update', $tenant->slug);
     }
 
     public function show($slug)

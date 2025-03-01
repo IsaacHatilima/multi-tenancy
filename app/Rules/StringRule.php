@@ -17,10 +17,15 @@ class StringRule
 
     public static function messages(string $name, bool $required): array
     {
-        return [
-            $name.'.required' => $required ?: ucwords($name).' is required.',
-            $name.'.max' => ucwords($name).' is too long.',
-            $name.'.string' => ucwords($name).' must be a string.',
-        ];
+        $messages = [];
+
+        if ($required) {
+            $messages[$name.'.required'] = ucwords(str_replace('_', ' ', $name)).' is required.';
+        }
+
+        $messages[$name.'.max'] = ucwords(str_replace('_', ' ', $name)).' is too long.';
+        $messages[$name.'.string'] = ucwords(str_replace('_', ' ', $name)).' must be a string.';
+
+        return $messages;
     }
 }

@@ -25,7 +25,8 @@ function TenantData({ tenant }: { tenant: Tenant }) {
         zip: tenant.zip,
         tenant_number: tenant.tenant_number,
         slug: tenant.slug,
-        contact_name: tenant.contact_name,
+        contact_first_name: tenant.contact_first_name,
+        contact_last_name: tenant.contact_last_name,
         contact_email: tenant.contact_email,
         contact_phone: tenant.contact_phone,
         current_password: '',
@@ -181,16 +182,35 @@ function TenantData({ tenant }: { tenant: Tenant }) {
                         ]}
                     />
                     <TextInput
-                        id="contact_name"
-                        name="contact_name"
-                        value={data.contact_name}
-                        error={errors.contact_name}
+                        id="contact_first_name"
+                        name="contact_first_name"
+                        value={data.contact_first_name}
+                        error={errors.contact_first_name}
                         withAsterisk
                         autoComplete="name"
                         mt="md"
-                        label="Contact Name"
+                        label="Contact First Name"
                         onChange={(e) =>
-                            setData('contact_name', e.target.value)
+                            setData('contact_first_name', e.target.value)
+                        }
+                        inputWrapperOrder={[
+                            'label',
+                            'input',
+                            'description',
+                            'error',
+                        ]}
+                    />
+                    <TextInput
+                        id="contact_last_name"
+                        name="contact_last_name"
+                        value={data.contact_last_name}
+                        error={errors.contact_last_name}
+                        withAsterisk
+                        autoComplete="name"
+                        mt="md"
+                        label="Contact Last Name"
+                        onChange={(e) =>
+                            setData('contact_last_name', e.target.value)
                         }
                         inputWrapperOrder={[
                             'label',

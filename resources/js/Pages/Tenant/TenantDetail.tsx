@@ -52,7 +52,7 @@ function TenantDetail() {
                                 <Text c="dimmed">{tenant.tenant_number}</Text>
                                 <Badge
                                     color={
-                                        tenant.status == 'ACTIVE'
+                                        tenant.status == 'active'
                                             ? 'green'
                                             : 'red'
                                     }

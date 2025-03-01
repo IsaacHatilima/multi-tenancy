@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -33,9 +34,12 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'zip',
             'contact_email',
             'contact_phone',
-            'contact_name',
+            'contact_first_name',
+            'contact_last_name',
             'tenant_number',
             'slug',
+            'created_by',
+            'updated_by',
         ];
     }
 
@@ -62,14 +66,19 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 
-    public function getStatusAttribute($value): string
-    {
-        return strtoupper($value);
-    }
-
     public function domain(): HasOne
     {
         return $this->hasOne(Domain::class);
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     protected function casts(): array

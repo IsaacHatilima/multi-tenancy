@@ -15,6 +15,8 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('created_by')->constrained('users')->restrictOnDelete();
+            $table->foreignUuid('updated_by')->nullable()->constrained('users')->restrictOnDelete();
             $table->string('tenancy_db_name')->nullable();
             $table->string('tenant_number');
             $table->string('slug');
@@ -24,7 +26,8 @@ class CreateTenantsTable extends Migration
             $table->string('state');
             $table->string('zip');
             $table->string('country');
-            $table->string('contact_name');
+            $table->string('contact_first_name');
+            $table->string('contact_last_name');
             $table->string('contact_email');
             $table->string('contact_phone');
             $table->enum('status', ['active', 'in-active'])->default('active');

@@ -14,7 +14,7 @@ class DomainFactory extends Factory
     public function definition(): array
     {
         return [
-            'domain' => $this->faker->word().rand(1, 9),
+            'domain' => $this->faker->unique()->domainWord(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

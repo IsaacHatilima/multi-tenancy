@@ -10,6 +10,7 @@ foreach (config('tenancy.central_domains') as $domain) {
 
             Route::middleware('auth')->group(function () {
                 Route::get('/tenants', [TenantController::class, 'index'])->name('tenants');
+                Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
                 Route::get('/tenants/{slug}', [TenantController::class, 'show'])->name('tenants.show');
                 Route::put('/tenants/{tenant}', [TenantController::class, 'update'])->name('tenants.update');
                 Route::delete('/tenants/{tenant}', [TenantController::class, 'destroy'])->name('tenants.destroy');

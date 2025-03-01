@@ -1,3 +1,5 @@
+import { User } from '@/types/user';
+
 export interface Tenant {
     id: string;
     tenancy_db_name: string;
@@ -10,10 +12,13 @@ export interface Tenant {
     status: string;
     tenant_number: string;
     slug: string;
-    contact_name: string;
+    contact_first_name: string;
+    contact_last_name: string;
     contact_email: string;
     contact_phone: string;
     domain: Domain;
+    created_by: User;
+    updated_by: User;
     created_at: string;
     updated_at: string;
 }

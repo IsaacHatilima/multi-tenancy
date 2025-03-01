@@ -16,9 +16,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Central database user
-        User::factory()->create();
+        $user = User::factory()->create();
 
-        Tenant::factory(10)->create();
+        $tenantCount = Tenant::count();
+
+        for ($i = 1; $i <= 15; $i++) {
+
+            Tenant::factory()->create([
+                'created_by' => $user->id,
+                'tenant_number' => 'TN-'.str_pad($tenantCount + $i, 4, '0', STR_PAD_LEFT),
+            ]);
+        }
 
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Actions;
 
 use App\Models\Tenant;
+use App\Models\User;
+use Hash;
 
 class TenantAction
 {
@@ -16,20 +18,19 @@ class TenantAction
 
     public function get_tenants($request)
     {
-
-        $query = Tenant::query()->with('domain');
+        $query = Tenant::query()->with(['domain', 'createdBy.profile', 'updatedBy.profile'])->orderBy('id', $request->sorting ?: 'desc');
 
         if ($request->filled('tenant_number')) {
             $query->where('tenant_number', 'ILIKE', '%'.$request->tenant_number.'%');
         }
 
         if ($request->filled('name')) {
-            $query->where('name', 'like', '%'.$request->name.'%');
+            $query->where('name', 'ILIKE', '%'.$request->name.'%');
         }
 
         if ($request->filled('domain')) {
             $query->whereHas('domain', function ($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->domain.'%');
+                $q->where('domain', 'ILIKE', '%'.$request->domain.'%');
             });
         }
 
@@ -38,12 +39,60 @@ class TenantAction
         }
 
         if ($request->filled('contact_name')) {
-            $query->where('contact_name', 'like', '%'.$request->contact_name.'%');
+            $query->where(function ($query) use ($request) {
+                $query->where('contact_first_name', 'ILIKE', '%'.$request->contact_name.'%')
+                    ->orWhere('contact_last_name', 'ILIKE', '%'.$request->contact_name.'%');
+            });
         }
 
-        $query->orderBy('created_at', $request->sorting === 'ascending' ? 'asc' : 'desc');
+        $query->orderBy('id', $request->sorting ?: 'desc');
 
         return $query->paginate(10)->withQueryString();
+    }
+
+    public function create_tenant($request)
+    {
+        $tenant = Tenant::create([
+            'name' => strtoupper($request->name),
+            'tenant_number' => $this->tenant_number(),
+            'address' => ucwords($request->address),
+            'city' => ucwords($request->city),
+            'state' => ucwords($request->state),
+            'country' => ucwords($request->country),
+            'zip' => $request->zip,
+            'contact_first_name' => ucwords($request->contact_first_name),
+            'contact_last_name' => ucwords($request->contact_last_name),
+            'contact_email' => strtolower($request->contact_email),
+            'contact_phone' => $request->contact_phone,
+            'created_by' => auth()->user()->id,
+        ]);
+
+        $tenant->domain()->create([
+            'domain' => strtolower($request->domain),
+        ]);
+
+        $tenant->run(function ($tenant) use ($request) {
+            $user = User::create([
+                'tenant_id' => $tenant->id,
+                'email' => strtolower($request->contact_email),
+                'password' => Hash::make('Password1#'),
+            ]);
+
+            $user->profile()->create([
+                'user_id' => $user->id,
+                'first_name' => ucwords($request->contact_first_name),
+                'last_name' => ucwords($request->contact_last_name),
+            ]);
+        });
+
+        return $tenant;
+    }
+
+    private function tenant_number(): string
+    {
+        $tenants = Tenant::count();
+
+        return 'TN-'.str_pad($tenants + 1, 4, '0', STR_PAD_LEFT);
     }
 
     public function update_tenant($request, $tenant)
@@ -56,9 +105,11 @@ class TenantAction
             'state' => ucwords($request->state),
             'country' => ucwords($request->country),
             'zip' => $request->zip,
-            'contact_name' => ucwords($request->contact_name),
+            'contact_first_name' => ucwords($request->contact_first_name),
+            'contact_last_name' => ucwords($request->contact_last_name),
             'contact_email' => strtolower($request->contact_email),
             'contact_phone' => $request->contact_phone,
+            'updated_by' => auth()->user()->id,
         ]);
 
         return $tenant->refresh();
