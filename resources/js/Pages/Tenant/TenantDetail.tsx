@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TenantData from '@/Pages/Tenant/Partials/TenantData';
+import UpdateSubdomain from '@/Pages/Tenant/Partials/UpdateSubdomain';
 import { Tenant } from '@/types/tenant';
 import { Head, usePage } from '@inertiajs/react';
 import { Badge, Card, Divider, Tabs, Text, Title } from '@mantine/core';
@@ -70,7 +71,7 @@ function TenantDetail() {
 
                         <div>
                             <Title order={3}>Domain Details</Title>
-                            {tenant.domain.domain}
+                            <UpdateSubdomain tenant={tenant} />
                         </div>
                     </Tabs.Panel>
 

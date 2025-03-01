@@ -37,12 +37,12 @@ class TenantController extends Controller
 
         $tenant = $this->tenantAction->create_tenant($request);
 
-        return Redirect::route('tenants.update', $tenant->slug);
+        return Redirect::route('tenants.show', $tenant);
     }
 
-    public function show($slug)
+    public function show(Tenant $tenant)
     {
-        $tenant = Tenant::where('slug', $slug)->with('domain')->firstOrFail();
+        $tenant->load('domain');
 
         return Inertia::render('Tenant/TenantDetail', [
             'tenant' => $tenant,
@@ -55,7 +55,7 @@ class TenantController extends Controller
 
         $updatedTenant = $this->tenantAction->update_tenant($request, $tenant);
 
-        return Redirect::route('tenants.update', $updatedTenant->slug);
+        return Redirect::route('tenants.show', $updatedTenant);
     }
 
     public function destroy(Request $request, Tenant $tenant)

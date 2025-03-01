@@ -21,7 +21,7 @@ function Index() {
     const rows = paginatedTenants.data.map((tenant: Tenant) => (
         <Table.Tr key={tenant.id}>
             <Table.Td>
-                <Link href={route('tenants.show', tenant.slug)}>
+                <Link href={route('tenants.show', tenant.id)}>
                     <span className="text-sky-600">{tenant.tenant_number}</span>
                 </Link>
             </Table.Td>

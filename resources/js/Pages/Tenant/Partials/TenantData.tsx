@@ -1,5 +1,5 @@
 import { Tenant } from '@/types/tenant';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput, Select, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -7,6 +7,7 @@ import { FormEvent, FormEventHandler } from 'react';
 
 function TenantData({ tenant }: { tenant: Tenant }) {
     const [loading, { open, close }] = useDisclosure();
+    const [openState, modalManager] = useDisclosure(false);
     const {
         data,
         setData,
@@ -31,20 +32,23 @@ function TenantData({ tenant }: { tenant: Tenant }) {
         contact_phone: tenant.contact_phone,
         current_password: '',
     });
-    const [openState, modalManager] = useDisclosure(false);
 
     const handleSubmit: FormEventHandler = (e: FormEvent<Element>): void => {
         e.preventDefault();
         open();
         put(route('tenants.update', tenant.id), {
-            preserveState: false,
             onSuccess: () => {
+                router.visit(route('tenants.update', tenant.id), {
+                    only: ['tenant'],
+                });
+
                 notifications.show({
                     title: 'Success',
                     message: 'Tenant has been updated successfully!',
                     color: 'green',
                 });
             },
+            onError: () => {},
             onFinish: () => {
                 close();
             },
@@ -57,7 +61,6 @@ function TenantData({ tenant }: { tenant: Tenant }) {
         e.preventDefault();
         open();
         destroy(route('tenants.destroy', tenant.id), {
-            preserveScroll: true,
             onSuccess: () => {
                 notifications.show({
                     title: 'Success',

@@ -1,5 +1,5 @@
 import { User } from '@/types/user';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { Button, Select, TextInput } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
@@ -35,6 +35,9 @@ export default function UpdateProfileInformation({
         open();
         patch(route('profile.update'), {
             onSuccess: () => {
+                router.visit(route('profile.edit'), {
+                    only: ['user'],
+                });
                 notifications.show({
                     title: 'Success',
                     message: 'Your profile has been updated successfully!',
