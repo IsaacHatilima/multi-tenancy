@@ -6,6 +6,7 @@ use App\Actions\TenantAction;
 use App\Http\Requests\TenantRequest;
 use App\Http\Requests\UpdateTenantRequest;
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -44,8 +45,16 @@ class TenantController extends Controller
     {
         $tenant->load('domain');
 
-        return Inertia::render('Tenant/TenantDetail', [
+        $tenant_users = $tenant->run(function () {
+            return User::with('profile')->paginate(10)->toArray();
+        });
+
+        return Inertia::render('Tenant/TenantDetails', [
             'tenant' => $tenant,
+            'tenant_users' => Inertia::optional(fn () => $tenant->run(function () {
+                return User::with('profile')->paginate(10)->toArray();
+            })),
+            //            'tenant_users' => $tenant_users,
         ]);
     }
 

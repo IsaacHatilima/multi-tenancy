@@ -1,8 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TenantData from '@/Pages/Tenant/Partials/TenantData';
+import TenantUsers from '@/Pages/Tenant/Partials/TenantUsers';
 import UpdateSubdomain from '@/Pages/Tenant/Partials/UpdateSubdomain';
 import { Tenant } from '@/types/tenant';
-import { Head, usePage } from '@inertiajs/react';
+import { PaginatedUsers } from '@/types/user';
+import { Head, usePage, WhenVisible } from '@inertiajs/react';
 import { Badge, Card, Divider, Tabs, Text, Title } from '@mantine/core';
 import {
     MdOutlineContactMail,
@@ -11,8 +13,10 @@ import {
     MdOutlineStickyNote2,
 } from 'react-icons/md';
 
-function TenantDetail() {
+function TenantDetails() {
     const tenant: Tenant = usePage().props.tenant;
+    const tenantUsers = usePage().props.tenant_users as PaginatedUsers;
+
     return (
         <AuthenticatedLayout>
             <Head title="Tenants" />
@@ -75,7 +79,11 @@ function TenantDetail() {
                         </div>
                     </Tabs.Panel>
 
-                    <Tabs.Panel value="users">Messages tab content</Tabs.Panel>
+                    <Tabs.Panel value="users">
+                        <WhenVisible data="tenant_users" fallback="Loading">
+                            <TenantUsers tenantUsers={tenantUsers} />
+                        </WhenVisible>
+                    </Tabs.Panel>
 
                     <Tabs.Panel value="payments">
                         Settings tab content
@@ -89,4 +97,4 @@ function TenantDetail() {
     );
 }
 
-export default TenantDetail;
+export default TenantDetails;

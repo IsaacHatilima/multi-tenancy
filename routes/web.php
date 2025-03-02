@@ -15,6 +15,8 @@ foreach (config('tenancy.central_domains') as $domain) {
                 Route::get('/tenants/{tenant}', [TenantController::class, 'show'])->name('tenants.show');
                 Route::put('/tenants/{tenant}', [TenantController::class, 'update'])->name('tenants.update');
                 Route::delete('/tenants/{tenant}', [TenantController::class, 'destroy'])->name('tenants.destroy');
+                Route::get('/tenant-users/{tenant}', [TenantController::class, 'tenant_users'])->name('tenants.tenant_users');
+
                 Route::put('/domain/{domain}', [DomainController::class, 'update'])->name('domains.update');
             });
 
