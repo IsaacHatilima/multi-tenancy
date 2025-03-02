@@ -43,18 +43,13 @@ class TenantController extends Controller
 
     public function show(Tenant $tenant)
     {
-        $tenant->load('domain');
-
-        $tenant_users = $tenant->run(function () {
-            return User::with('profile')->paginate(10)->toArray();
-        });
 
         return Inertia::render('Tenant/TenantDetails', [
-            'tenant' => $tenant,
+            'tenant' => $tenant->load('domain'),
             'tenant_users' => Inertia::optional(fn () => $tenant->run(function () {
+                // User::with('profile')->paginate(10) throws Database connection [tenant] not configured error
                 return User::with('profile')->paginate(10)->toArray();
             })),
-            //            'tenant_users' => $tenant_users,
         ]);
     }
 
