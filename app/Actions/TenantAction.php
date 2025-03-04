@@ -50,6 +50,27 @@ class TenantAction
         return $query->paginate(10)->withQueryString();
     }
 
+    public function get_tenant_users($tenant, $request)
+    {
+        return $tenant->run(function () use ($request) {
+            $query = User::query()->with('profile');
+
+            if ($request->filled('first_name')) {
+                $query->whereHas('profile', function ($q) use ($request) {
+                    $q->where('first_name', 'ILIKE', '%'.$request->first_name.'%');
+                });
+            }
+
+            if ($request->filled('last_name')) {
+                $query->whereHas('profile', function ($q) use ($request) {
+                    $q->where('last_name', 'ILIKE', '%'.$request->last_name.'%');
+                });
+            }
+
+            return $query->paginate(10)->withQueryString()->toArray();
+        });
+    }
+
     public function create_tenant($request)
     {
         $tenant = Tenant::create([

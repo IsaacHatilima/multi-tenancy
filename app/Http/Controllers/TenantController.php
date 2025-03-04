@@ -6,7 +6,6 @@ use App\Actions\TenantAction;
 use App\Http\Requests\TenantRequest;
 use App\Http\Requests\UpdateTenantRequest;
 use App\Models\Tenant;
-use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -41,15 +40,13 @@ class TenantController extends Controller
         return Redirect::route('tenants.show', $tenant);
     }
 
-    public function show(Tenant $tenant)
+    public function show(Request $request, Tenant $tenant)
     {
+        $this->authorize('view', $tenant);
 
         return Inertia::render('Tenant/TenantDetails', [
             'tenant' => $tenant->load('domain'),
-            'tenant_users' => Inertia::optional(fn () => $tenant->run(function () {
-                // User::with('profile')->paginate(10) throws Database connection [tenant] not configured error
-                return User::with('profile')->paginate(10)->toArray();
-            })),
+            'tenant_users' => Inertia::optional(fn () => $this->tenantAction->get_tenant_users($tenant, $request)),
         ]);
     }
 

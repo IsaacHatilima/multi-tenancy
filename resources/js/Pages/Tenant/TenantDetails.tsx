@@ -3,9 +3,9 @@ import TenantData from '@/Pages/Tenant/Partials/TenantData';
 import TenantUsers from '@/Pages/Tenant/Partials/TenantUsers';
 import UpdateSubdomain from '@/Pages/Tenant/Partials/UpdateSubdomain';
 import { Tenant } from '@/types/tenant';
-import { PaginatedUsers } from '@/types/user';
 import { Head, usePage, WhenVisible } from '@inertiajs/react';
 import { Badge, Card, Divider, Tabs, Text, Title } from '@mantine/core';
+import { useState } from 'react';
 import {
     MdOutlineContactMail,
     MdOutlinePayments,
@@ -15,13 +15,27 @@ import {
 
 function TenantDetails() {
     const tenant: Tenant = usePage().props.tenant;
-    const tenantUsers = usePage().props.tenant_users as PaginatedUsers;
+
+    const [activeTab, setActiveTab] = useState(
+        localStorage.getItem('activeTab') || 'details',
+    );
+
+    const handleTabChange = (value: string | null) => {
+        if (!value) return;
+        setActiveTab(value);
+        localStorage.setItem('activeTab', value);
+    };
 
     return (
         <AuthenticatedLayout>
             <Head title="Tenants" />
 
-            <Tabs variant="outline" radius="md" defaultValue="details">
+            <Tabs
+                variant="outline"
+                radius="md"
+                value={activeTab}
+                onChange={handleTabChange}
+            >
                 <Tabs.List>
                     <Tabs.Tab
                         value="details"
@@ -81,7 +95,7 @@ function TenantDetails() {
 
                     <Tabs.Panel value="users">
                         <WhenVisible data="tenant_users" fallback="Loading">
-                            <TenantUsers tenantUsers={tenantUsers} />
+                            <TenantUsers />
                         </WhenVisible>
                     </Tabs.Panel>
 
