@@ -5,11 +5,17 @@ import { Group, Pagination, Table, TextInput } from '@mantine/core';
 import { debounce } from 'lodash';
 import { useEffect } from 'react';
 
+interface Filters {
+    first_name: string | null;
+    last_name: string | null;
+}
+
 function TenantUsers() {
     const tenant: Tenant = usePage().props.tenant;
     const tenantUsers = usePage().props.tenant_users as PaginatedUsers;
+    const filters: Filters = usePage().props.filters as Filters;
 
-    const rows = tenantUsers.data.map((user: User) => (
+    const rows = tenantUsers?.data.map((user: User) => (
         <Table.Tr key={user.id}>
             <Table.Td>{user.profile.first_name}</Table.Td>
             <Table.Td>{user.profile.last_name}</Table.Td>
@@ -17,8 +23,8 @@ function TenantUsers() {
     ));
 
     const { data, setData } = useForm({
-        first_name: '',
-        last_name: '',
+        first_name: filters?.first_name || '',
+        last_name: filters?.last_name || '',
     });
 
     const handleSearch = debounce(() => {
@@ -28,19 +34,19 @@ function TenantUsers() {
         const hadFilters =
             urlParams.has('first_name') || urlParams.has('last_name');
 
-        if (data.first_name) {
-            urlParams.set('first_name', data.first_name);
-        } else {
-            urlParams.delete('first_name');
-        }
+        const setOrDeleteParam = (key: string, value: string | undefined) => {
+            if (value) {
+                urlParams.set(key, value);
+            } else {
+                urlParams.delete(key);
+            }
+        };
 
-        if (data.last_name) {
-            urlParams.set('last_name', data.last_name);
-        } else {
-            urlParams.delete('last_name');
-        }
+        setOrDeleteParam('first_name', data.first_name);
+        setOrDeleteParam('last_name', data.last_name);
 
-        const hasFilters = data.first_name || data.last_name;
+        const hasFilters =
+            urlParams.has('first_name') || urlParams.has('last_name');
 
         if (hasFilters) {
             urlParams.set('page', '1');
@@ -48,22 +54,36 @@ function TenantUsers() {
             urlParams.set('page', currentPage);
         }
 
-        if (urlParams.get('page') === '1') {
-            urlParams.delete('page');
-        }
-
         const targetUrl = `${route('tenants.show', tenant.id)}?${urlParams.toString()}`;
 
-        router.visit(targetUrl, {
-            only: ['tenant_users'],
-            replace: true,
-            preserveState: true,
-        });
+        router.get(
+            targetUrl,
+            {},
+            {
+                only: ['tenant_users', 'filters'],
+                replace: true,
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
     }, 300);
 
     useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasFilters =
+            urlParams.has('first_name') || urlParams.has('last_name');
+
+        if (!hasFilters) {
+            setData({
+                first_name: '',
+                last_name: '',
+            });
+        }
+    }, [window.location.search]);
+
+    useEffect(() => {
         handleSearch();
-    }, [data, handleSearch]);
+    }, [data]);
 
     return (
         <div>
@@ -106,28 +126,24 @@ function TenantUsers() {
 
             <div className="mt-4 flex justify-end">
                 <Pagination.Root
-                    total={tenantUsers.last_page}
-                    value={tenantUsers.current_page}
+                    total={tenantUsers?.last_page}
+                    value={tenantUsers?.current_page}
                     getItemProps={(page) => ({
-                        href: tenantUsers.links[page]?.url,
+                        href: tenantUsers?.links[page]?.url,
                         onClick: () => {
-                            if (tenantUsers.links[page]?.url) {
-                                router.visit(
-                                    page === 1
-                                        ? tenantUsers.path
-                                        : tenantUsers.links[page].url,
-                                );
+                            if (tenantUsers?.links[page]?.url) {
+                                router.visit(tenantUsers?.links[page].url);
                             }
                         },
                     })}
                 >
                     <Group gap={5} justify="center">
                         <Pagination.First
-                            onClick={() => router.visit(tenantUsers.path)}
+                            onClick={() => router.visit(tenantUsers?.path)}
                         />
                         <Pagination.Previous
                             onClick={() =>
-                                router.visit(tenantUsers.prev_page_url)
+                                router.visit(tenantUsers?.prev_page_url)
                             }
                         />
 
@@ -135,12 +151,12 @@ function TenantUsers() {
 
                         <Pagination.Next
                             onClick={() =>
-                                router.visit(tenantUsers.next_page_url)
+                                router.visit(tenantUsers?.next_page_url)
                             }
                         />
                         <Pagination.Last
                             onClick={() =>
-                                router.visit(tenantUsers.last_page_url)
+                                router.visit(tenantUsers?.last_page_url)
                             }
                         />
                     </Group>
@@ -148,8 +164,8 @@ function TenantUsers() {
             </div>
             <div className="mt-4 flex justify-end">
                 <p className="text-sm font-thin text-gray-400">
-                    {tenantUsers.from} to {tenantUsers.to} of{' '}
-                    {tenantUsers.total}
+                    {tenantUsers?.from} to {tenantUsers?.to} of{' '}
+                    {tenantUsers?.total}
                 </p>
             </div>
         </div>

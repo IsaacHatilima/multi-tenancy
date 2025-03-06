@@ -5,7 +5,7 @@ import UpdateSubdomain from '@/Pages/Tenant/Partials/UpdateSubdomain';
 import { Tenant } from '@/types/tenant';
 import { Head, usePage, WhenVisible } from '@inertiajs/react';
 import { Badge, Card, Divider, Tabs, Text, Title } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     MdOutlineContactMail,
     MdOutlinePayments,
@@ -15,16 +15,40 @@ import {
 
 function TenantDetails() {
     const tenant: Tenant = usePage().props.tenant;
-
-    const [activeTab, setActiveTab] = useState(
-        localStorage.getItem('activeTab') || 'details',
-    );
+    const defaultTab = 'details';
+    const queryParams = new URLSearchParams(window.location.search);
+    const initialTab = queryParams.get('tab') || defaultTab;
+    const [activeTab, setActiveTab] = useState(initialTab);
 
     const handleTabChange = (value: string | null) => {
         if (!value) return;
+
         setActiveTab(value);
-        localStorage.setItem('activeTab', value);
+
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('tab', value);
+        window.history.pushState({}, '', newUrl);
     };
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
+        if (!queryParams.has('tab')) {
+            setActiveTab(defaultTab);
+        }
+    }, [window.location.search]);
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+
+        if (tab !== 'users') {
+            urlParams.delete('first_name');
+            urlParams.delete('last_name');
+
+            const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+            window.history.replaceState({}, '', newUrl);
+        }
+    }, [window.location.search]);
 
     return (
         <AuthenticatedLayout>

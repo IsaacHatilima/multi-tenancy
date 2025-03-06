@@ -14,9 +14,55 @@ import {
 import { debounce } from 'lodash';
 import { useEffect } from 'react';
 
+interface Filters {
+    tenant_number: string | null;
+    name: string | null;
+    domain: string | null;
+    status: string | null;
+    contact_name: string | null;
+}
+
 function Index() {
     const paginatedTenants: PaginatedTenants = usePage().props
         .tenants as PaginatedTenants;
+    const filters: Filters = usePage().props.filters as Filters;
+    const { data, setData } = useForm({
+        tenant_number: filters?.tenant_number || '',
+        name: filters?.name || '',
+        domain: filters?.domain || '',
+        status: filters?.status || '',
+        contact_name: filters?.contact_name || '',
+        sorting: 'desc',
+    });
+    const handleSearch = debounce(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPage = urlParams.get('page') || 1;
+        const filtersApplied = Object.keys(data).some(
+            (key) =>
+                key !== 'sorting' &&
+                data[key as keyof Filters] !== '' &&
+                data[key as keyof Filters] !== null,
+        );
+        const pageToUse = filtersApplied ? 1 : currentPage;
+        const params: Record<string, string | number> = {
+            ...data,
+            page: pageToUse,
+        };
+
+        Object.keys(params).forEach((key) => {
+            if (params[key] === '' || params[key] === null) {
+                delete params[key];
+            }
+        });
+
+        router.get(route('tenants'), params, {
+            preserveState: true,
+        });
+    }, 300);
+
+    useEffect(() => {
+        handleSearch();
+    }, [data]);
 
     const rows = paginatedTenants.data.map((tenant: Tenant) => (
         <Table.Tr key={tenant.id}>
@@ -46,44 +92,6 @@ function Index() {
             <Table.Td>{tenant.created_at}</Table.Td>
         </Table.Tr>
     ));
-
-    const { data, setData } = useForm({
-        tenant_number: '',
-        name: '',
-        domain: '',
-        status: '',
-        contact_name: '',
-        sorting: 'desc',
-    });
-
-    const handleSearch = debounce(() => {
-        const urlParams = new URLSearchParams();
-        if (data.tenant_number)
-            urlParams.append('tenant_number', data.tenant_number);
-        if (data.name) urlParams.append('name', data.name);
-        if (data.domain) urlParams.append('domain', data.domain);
-        if (data.status) urlParams.append('status', data.status);
-        if (data.contact_name)
-            urlParams.append('contact_name', data.contact_name);
-        if (data.sorting !== 'desc') {
-            urlParams.append('sorting', data.sorting);
-        }
-
-        const searchParams = urlParams.toString();
-        const targetUrl = searchParams
-            ? route('tenants') + '?' + searchParams
-            : route('tenants');
-
-        router.get(targetUrl, {}, { replace: true, preserveState: true });
-    }, 300);
-
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const hasPageParam = urlParams.has('page');
-        if (!hasPageParam) {
-            handleSearch();
-        }
-    }, [data]);
 
     return (
         <AuthenticatedLayout>
@@ -193,10 +201,8 @@ function Index() {
                             href: paginatedTenants.links[page]?.url,
                             onClick: () => {
                                 if (paginatedTenants.links[page]?.url) {
-                                    router.visit(
-                                        page == 1
-                                            ? paginatedTenants.path
-                                            : paginatedTenants.links[page].url,
+                                    router.get(
+                                        paginatedTenants.links[page].url,
                                     );
                                 }
                             },

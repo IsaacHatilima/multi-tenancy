@@ -28,6 +28,13 @@ class TenantController extends Controller
 
         return Inertia::render('Tenant/Index', [
             'tenants' => $this->tenantAction->get_tenants($request),
+            'filters' => [
+                'name' => $request->name,
+                'tenant_number' => $request->tenant_number,
+                'contact_name' => $request->contact_name,
+                'domain' => $request->domain,
+                'status' => $request->status,
+            ],
         ]);
     }
 
@@ -47,6 +54,10 @@ class TenantController extends Controller
         return Inertia::render('Tenant/TenantDetails', [
             'tenant' => $tenant->load('domain'),
             'tenant_users' => Inertia::optional(fn () => $this->tenantAction->get_tenant_users($tenant, $request)),
+            'filters' => [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+            ],
         ]);
     }
 
