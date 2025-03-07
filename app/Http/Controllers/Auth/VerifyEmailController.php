@@ -22,6 +22,7 @@ class VerifyEmailController extends Controller
         }
 
         if ($user->markEmailAsVerified()) {
+            // TODO: add account has been verified email.
             event(new Verified($user));
         }
 
