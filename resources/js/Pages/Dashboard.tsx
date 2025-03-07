@@ -19,7 +19,10 @@ export default function Dashboard() {
             <div className="py-12">
                 <Card shadow="sm" padding="lg" radius="md" withBorder>
                     <Group justify="space-between" mt="md" mb="xs">
-                        <Text fw={500}>RILT Starter App {tenant?.id}</Text>
+                        <Text fw={500}>
+                            RILT Starter App.{' '}
+                            {tenant ? 'Tenant: ' + tenant.name : ''}
+                        </Text>
                         <Badge color="pink">V 0.0.1</Badge>
                     </Group>
 
