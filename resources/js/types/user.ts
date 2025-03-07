@@ -13,6 +13,12 @@ export interface User {
     profile: Profile;
 }
 
+export interface TenantUserFilter {
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+}
+
 export interface Profile {
     id: number;
     first_name: string;

@@ -67,6 +67,10 @@ class TenantAction
                 });
             }
 
+            if ($request->filled('email')) {
+                $query->where('email', 'ILIKE', '%'.$request->email.'%');
+            }
+
             return $query->paginate(10)->withQueryString()->toArray();
         });
     }

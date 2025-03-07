@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Tenants\UsersController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -25,6 +26,10 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
     ScopeSessions::class,
 ])->group(function () {
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/users', [UsersController::class, 'index'])->name('users');
+    });
 
     require __DIR__.'/guest-common.php';
 

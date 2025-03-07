@@ -1,19 +1,16 @@
+import TablePagination from '@/Components/TablePagination';
 import { Tenant } from '@/types/tenant';
-import { PaginatedUsers, User } from '@/types/user';
+import { PaginatedUsers, TenantUserFilter, User } from '@/types/user';
 import { router, useForm, usePage } from '@inertiajs/react';
-import { Group, Pagination, Table, TextInput } from '@mantine/core';
+import { Table, TextInput } from '@mantine/core';
 import { debounce } from 'lodash';
 import { useEffect } from 'react';
-
-interface Filters {
-    first_name: string | null;
-    last_name: string | null;
-}
 
 function TenantUsers() {
     const tenant: Tenant = usePage().props.tenant;
     const tenantUsers = usePage().props.tenant_users as PaginatedUsers;
-    const filters: Filters = usePage().props.filters as Filters;
+    const filters: TenantUserFilter = usePage().props
+        .filters as TenantUserFilter;
 
     const rows = tenantUsers?.data.map((user: User) => (
         <Table.Tr key={user.id}>
@@ -124,50 +121,7 @@ function TenantUsers() {
                 <Table.Tbody>{rows}</Table.Tbody>
             </Table>
 
-            <div className="mt-4 flex justify-end">
-                <Pagination.Root
-                    total={tenantUsers?.last_page}
-                    value={tenantUsers?.current_page}
-                    getItemProps={(page) => ({
-                        href: tenantUsers?.links[page]?.url,
-                        onClick: () => {
-                            if (tenantUsers?.links[page]?.url) {
-                                router.visit(tenantUsers?.links[page].url);
-                            }
-                        },
-                    })}
-                >
-                    <Group gap={5} justify="center">
-                        <Pagination.First
-                            onClick={() => router.visit(tenantUsers?.path)}
-                        />
-                        <Pagination.Previous
-                            onClick={() =>
-                                router.visit(tenantUsers?.prev_page_url)
-                            }
-                        />
-
-                        <Pagination.Items />
-
-                        <Pagination.Next
-                            onClick={() =>
-                                router.visit(tenantUsers?.next_page_url)
-                            }
-                        />
-                        <Pagination.Last
-                            onClick={() =>
-                                router.visit(tenantUsers?.last_page_url)
-                            }
-                        />
-                    </Group>
-                </Pagination.Root>
-            </div>
-            <div className="mt-4 flex justify-end">
-                <p className="text-sm font-thin text-gray-400">
-                    {tenantUsers?.from} to {tenantUsers?.to} of{' '}
-                    {tenantUsers?.total}
-                </p>
-            </div>
+            <TablePagination data={tenantUsers} />
         </div>
     );
 }

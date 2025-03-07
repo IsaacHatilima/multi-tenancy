@@ -1,7 +1,7 @@
 import SideNavOptions from '@/Components/SideNavOptions';
 import { MenuItem } from '@/types/menu';
 import { Box } from '@mantine/core';
-import { MdSpaceDashboard } from 'react-icons/md';
+import { MdSpaceDashboard, MdSupervisorAccount } from 'react-icons/md';
 
 function TenantSideNav() {
     const menuItems: MenuItem[] = [
@@ -9,6 +9,12 @@ function TenantSideNav() {
             icon: MdSpaceDashboard,
             label: 'Dashboard',
             href: route('dashboard'),
+            children: [],
+        },
+        {
+            icon: MdSupervisorAccount,
+            label: 'Users',
+            href: route('users'),
             children: [],
         },
     ];
