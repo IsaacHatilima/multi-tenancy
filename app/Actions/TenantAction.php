@@ -53,7 +53,7 @@ class TenantAction
     public function get_tenant_users($tenant, $request)
     {
         return $tenant->run(function () use ($request) {
-            $query = User::query()->with('profile');
+            $query = User::query()->with('profile')->orderBy('created_at', 'DESC');
 
             if ($request->filled('first_name')) {
                 $query->whereHas('profile', function ($q) use ($request) {

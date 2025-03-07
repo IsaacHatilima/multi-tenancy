@@ -30,6 +30,21 @@ class RegisterAction
         return $user;
     }
 
+    public function create_user($request)
+    {
+        $user = User::create([
+            'tenant_id' => tenant()->id,
+            'email' => $request->email,
+            'password' => 'Password1#',
+        ]);
+
+        $this->profileManagerAction->create_profile($request, $user);
+
+        $user->notify(new VerifyEmailNotification($user));
+
+        return $user;
+    }
+
     public function googleRegister($request)
     {
         $user = User::create([

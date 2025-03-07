@@ -15,6 +15,8 @@ return [
 
     'default' => env('QUEUE_CONNECTION', 'database'),
 
+    'connection' => env('DB_CONNECTION', 'central'),
+
     /*
     |--------------------------------------------------------------------------
     | Queue Connections

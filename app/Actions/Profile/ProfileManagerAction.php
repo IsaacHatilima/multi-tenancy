@@ -18,8 +18,8 @@ class ProfileManagerAction
     {
         return Profile::create([
             'user_id' => $user->id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
+            'first_name' => ucwords($request->first_name),
+            'last_name' => ucwords($request->last_name),
         ]);
     }
 

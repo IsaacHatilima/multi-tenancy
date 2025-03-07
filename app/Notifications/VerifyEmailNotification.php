@@ -7,8 +7,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\URL;
 
 class VerifyEmailNotification extends Notification implements ShouldQueue
 {
@@ -39,20 +37,23 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(Config::get('auth.verification.expire', 60)),
-            [
-                'id' => $notifiable->getKey(),
-                'hash' => sha1($notifiable->getEmailForVerification()),
-            ]
-        );
+        $verificationUrl = route('verification.verify', [
+            'id' => $notifiable->getKey(),
+        ]);
+
+        if (tenant()) {
+            $urlWithoutScheme = preg_replace('#^https?://#', '', $verificationUrl);
+
+            $finalUrl = parse_url($verificationUrl, PHP_URL_SCHEME).'://'.tenant()->domain->domain.'.'.$urlWithoutScheme;
+        } else {
+            $finalUrl = $verificationUrl;
+        }
 
         return (new MailMessage)
             ->subject('Email Verification')
             ->greeting('Hello '.$this->user->profile->first_name.'!')
             ->line('Your account has been created on. Click the link below to verify your email address.')
-            ->action('Verify Email', $verificationUrl)
+            ->action('Verify Email', $finalUrl)
             ->line('Thank you for using our application!');
     }
 

@@ -1,5 +1,6 @@
 import TablePagination from '@/Components/TablePagination';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import CreateUser from '@/Pages/Tenant/TenantPages/CreateUser';
 import { PaginatedUsers, TenantUserFilter, User } from '@/types/user';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { Card, Table, TextInput } from '@mantine/core';
@@ -71,8 +72,9 @@ function Users() {
                 withBorder
                 className="mt-2"
             >
-                <div>
+                <div className="flex justify-between">
                     <h2 className="mb-4 text-lg font-semibold">Users</h2>
+                    <CreateUser />
                 </div>
                 <Table striped highlightOnHover>
                     <Table.Thead>

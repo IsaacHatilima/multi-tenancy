@@ -29,9 +29,10 @@ Route::middleware([
 
     Route::middleware('auth')->group(function () {
         Route::get('/users', [UsersController::class, 'index'])->name('users');
+        Route::post('/users', [UsersController::class, 'store'])->name('users.store');
     });
 
-    require __DIR__.'/guest-common.php';
+    //    require __DIR__.'/guest-common.php';
 
     require __DIR__.'/protected-common.php';
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenants;
 
+use App\Actions\Auth\RegisterAction;
 use App\Actions\TenantAction;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -15,9 +16,12 @@ class UsersController extends Controller
 
     private TenantAction $tenantAction;
 
-    public function __construct(TenantAction $tenantAction)
+    private RegisterAction $registerAction;
+
+    public function __construct(TenantAction $tenantAction, RegisterAction $registerAction)
     {
         $this->tenantAction = $tenantAction;
+        $this->registerAction = $registerAction;
     }
 
     public function index(Request $request)
@@ -28,5 +32,12 @@ class UsersController extends Controller
             'users' => $this->tenantAction->get_tenant_users(tenant(), $request),
             'filters' => $request->all(),
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $this->registerAction->create_user($request);
+
+        return redirect()->back();
     }
 }

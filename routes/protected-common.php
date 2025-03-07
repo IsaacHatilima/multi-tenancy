@@ -3,7 +3,6 @@
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\SecurityController;
-use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ProfileController;
 use Inertia\Inertia;
 
@@ -18,10 +17,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/security', [SecurityController::class, 'edit'])->name('security.edit');
     Route::put('/security', [SecurityController::class, 'copy_recovery_codes'])->name('security.put');
-
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')
