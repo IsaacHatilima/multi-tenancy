@@ -12,7 +12,6 @@ provides authentication and multi tenancy ready to go.
 
 ### Key Features:
 
-- Easy authentication pipeline using **Laravel Fortify**.
 - Clean, organized architecture with actions-based controllers for better maintainability.
 - Ready-to-go auth routes and views with **Inertia.js** and **React** for a seamless SPA experience.
 - **Tailwind CSS** for responsive, customizable UI design.
@@ -28,8 +27,6 @@ provides authentication and multi tenancy ready to go.
   apps (SPAs) using server-side
   routing and controllers.
 - **[Laravel](https://laravel.com/)**: A robust PHP framework for building web applications with an elegant syntax.
-- **[Laravel Fortify](https://laravel.com/docs/11.x/fortify)**: A package for building the authentication layer in
-  Laravel applications.
 - **[Tailwind CSS](https://tailwindui.com/)**: A utility-first CSS framework for creating responsive and customizable
   designs.
 - **[Mantine UI](https://mantine.dev/)**: A React component library for building beautiful user interfaces with a rich
@@ -67,8 +64,7 @@ Visit http://localhost:8000 to see the app in action.
 ## Architecture Decisions
 
 **Actions-based Controllers:** The project moves business logic into action classes to keep controllers focused on
-request
-handling. This leads to a cleaner, more maintainable structure.
+request handling. This leads to a cleaner, more maintainable structure.
 
 **Inertia.js + React:** Combining Inertia.js with React allows for a seamless SPA experience with minimal client-side
 routing and more intuitive server-side controller integration.

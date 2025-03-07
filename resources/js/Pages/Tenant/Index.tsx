@@ -97,7 +97,7 @@ function Index() {
         <AuthenticatedLayout>
             <Head title="Tenants" />
 
-            <Card shadow="sm" padding="lg" radius="md">
+            <Card shadow="sm" padding="lg" radius="md" withBorder>
                 <div className="mb-4 flex items-center justify-end">
                     <CreateTenant />
                 </div>

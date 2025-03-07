@@ -55,8 +55,8 @@ function TenantDetails() {
             <Head title="Tenants" />
 
             <Tabs
-                variant="outline"
-                radius="md"
+                variant="pills"
+                color="blue"
                 value={activeTab}
                 onChange={handleTabChange}
             >
@@ -87,7 +87,13 @@ function TenantDetails() {
                     </Tabs.Tab>
                 </Tabs.List>
 
-                <Card shadow="sm" padding="lg" radius="md">
+                <Card
+                    shadow="sm"
+                    padding="lg"
+                    radius="md"
+                    withBorder
+                    className="mt-2"
+                >
                     <Tabs.Panel value="details">
                         <div>
                             <Title order={3}>Tenant Details</Title>
