@@ -1,10 +1,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TwoFactorConfig from '@/Pages/Profile/Partials/TwoFactorConfig';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Card } from '@mantine/core';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 
 function Security() {
+    const fortify: boolean = usePage().props.fortify as boolean;
     return (
         <AuthenticatedLayout>
             <Head title="Profile" />
@@ -20,14 +21,16 @@ function Security() {
                         <UpdatePasswordForm />
                     </Card>
 
-                    <Card
-                        shadow="sm"
-                        padding="lg"
-                        radius="md"
-                        withBorder={false}
-                    >
-                        <TwoFactorConfig />
-                    </Card>
+                    {fortify && (
+                        <Card
+                            shadow="sm"
+                            padding="lg"
+                            radius="md"
+                            withBorder={false}
+                        >
+                            <TwoFactorConfig />
+                        </Card>
+                    )}
                 </div>
             </div>
         </AuthenticatedLayout>
