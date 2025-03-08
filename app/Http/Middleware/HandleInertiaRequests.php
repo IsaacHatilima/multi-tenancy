@@ -38,7 +38,6 @@ class HandleInertiaRequests extends Middleware
                 'social_auth' => $request->user()?->password === null,
             ],
             'tenant' => tenant() ?: null,
-            'fortify_auth' => config('fortify.auth'),
             'socialAuth' => [
                 'google' => config('auth.socialAuth.google'),
                 'github' => config('auth.socialAuth.github'),
