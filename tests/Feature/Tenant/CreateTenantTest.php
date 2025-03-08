@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\Tenant;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Testing\AssertableInertia as Assert;
 
 $data = [
@@ -19,16 +17,8 @@ $data = [
     'domain' => 'tiktok',
 ];
 
-test('tenant can be deleted', function ($data) {
-    $dataToCreateWith = $data;
+test('tenant can be created', function ($data) {
     $user = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
-
-    $tenants = Tenant::count();
-    $tenantNumber = 'TN-'.str_pad($tenants + 1, 4, '0', STR_PAD_LEFT);
-
-    $dataToCreateWith['created_by'] = $user->id;
-    $dataToCreateWith['tenant_number'] = $tenantNumber;
-    $tenant = Tenant::factory()->create($dataToCreateWith);
 
     $this->get(route('login'));
 
@@ -54,29 +44,19 @@ test('tenant can be deleted', function ($data) {
 
     $this
         ->followingRedirects()
-        ->delete(route('tenants.destroy', $tenant->id), [
-            'current_password' => 'Password1#',
-        ])
+        ->post(route('tenants.store'), $data)
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('Tenant/Index')
+            ->component('Tenant/TenantDetails')
         );
 
-    $this->assertDatabaseMissing('tenants', ['name' => 'TIKTOK']);
+    $this->assertDatabaseHas('tenants', ['name' => 'TIKTOK']);
 })->with([
     'data' => [$data],
 ]);
 
-test('tenant cannot be delete with wrong password', function ($data) {
-    $dataToCreateWith = $data;
+test('tenant cannot be created with missing fields', function ($data) {
     $user = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
-
-    $tenants = Tenant::count();
-    $tenantNumber = 'TN-'.str_pad($tenants + 1, 4, '0', STR_PAD_LEFT);
-
-    $dataToCreateWith['created_by'] = $user->id;
-    $dataToCreateWith['tenant_number'] = $tenantNumber;
-    $tenant = Tenant::factory()->create($dataToCreateWith);
 
     $this->get(route('login'));
 
@@ -100,14 +80,19 @@ test('tenant cannot be delete with wrong password', function ($data) {
             ->has('tenants')
         );
 
+    $dataWithNullName = $data;
+    $dataWithNullName['name'] = '';
+    $dataWithNullName['contact_first_name'] = '';
+
     $this
         ->followingRedirects()
-        ->delete(route('tenants.destroy', $tenant->id), [
-            'current_password' => 'Password123#',
-        ])
+        ->post(route('tenants.store'), $dataWithNullName)
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Tenant/Index')
+            ->has('errors')
+            ->where('errors.name', 'Tenant Name is required.')
+            ->where('errors.contact_first_name', 'Contact First Name is required.')
         );
 
     $this->assertDatabaseMissing('tenants', ['name' => 'TIKTOK']);
