@@ -1,55 +1,55 @@
 <?php
 
-use App\Models\User;
+use Inertia\Testing\AssertableInertia as Assert;
 
 test('registration screen can be rendered', function () {
-    $response = $this->get('/register');
 
-    $response->assertStatus(200);
+    $this->get(route('register'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/Register')
+            ->where('errors', [])
+        );
 });
 
 test('new users can register', function () {
-    $response = $this->post('/register', [
-        'first_name' => 'John',
-        'last_name' => 'Doe',
-        'email' => 'test@example.com',
-        'password' => 'Password1#',
-        'password_confirmation' => 'Password1#',
-    ]);
+    $this->get(route('register'));
 
-    $response->assertSessionHasNoErrors();
-
-    $this->assertAuthenticated();
-
-    $response->assertRedirect(route('dashboard', absolute: false));
-
-    // Assert that the user was created in the database
-    $this->assertDatabaseHas('users', [
-        'email' => 'test@example.com',
-    ]);
-
-    // Check if the user's profile was created correctly
-    $user = User::where('email', 'test@example.com')->first();
-    $this->assertEquals('John', $user->profile->first_name);
-    $this->assertEquals('Doe', $user->profile->last_name);
-
+    $this
+        ->followingRedirects()
+        ->post(route('register.store'), [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'test@example.com',
+            'password' => 'Password1#',
+            'password_confirmation' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Dashboard')
+            ->where('auth.user.email', 'test@example.com')
+        );
 });
 
 test('user registration fails', function () {
-    $response = $this->post('/register', [
-        'first_name' => '',
-        'last_name' => '',
-        'email' => 'invalid-email',
-        'password' => 'short',
-        'password_confirmation' => 'not-matching',
-    ]);
+    $this->get(route('register'));
 
-    $response->assertSessionHasErrors(['first_name', 'last_name', 'email', 'password']);
-
-    $this->assertGuest();
-
-    $this->assertDatabaseMissing('users', [
-        'email' => 'invalid-email',
-    ]);
-
+    $this
+        ->followingRedirects()
+        ->post(route('register.store'), [
+            'first_name' => '',
+            'last_name' => '',
+            'email' => 'invalid-email',
+            'password' => 'invalid-password',
+            'password_confirmation' => 'invalid-password-mismatch',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/Register')
+            ->has('errors')
+            ->where('errors.first_name', 'First Name is required.')
+            ->where('errors.last_name', 'Last Name is required.')
+            ->where('errors.email', 'Invalid email.')
+            ->where('errors.password', 'Password must contain at least one number and one uppercase and lowercase letter.')
+            ->where('errors.password_confirmation', 'Confirm Password does not match.')
+        );
 });

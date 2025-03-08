@@ -2,41 +2,75 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Testing\AssertableInertia as Assert;
 
 test('password can be updated', function () {
-    $user = User::factory()->create(['password' => Hash::make('Password1#')]);
+    $user = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
 
-    $response = $this
-        ->actingAs($user)
-        ->from(route('security.edit'))
+    $this->get(route('login'));
+
+    $this
+        ->followingRedirects()
+        ->post(route('login.post'), [
+            'email' => $user->email,
+            'password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Dashboard')
+        );
+
+    $this->get(route('security.edit'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+            ->where('errors', [])
+        );
+
+    $this
+        ->followingRedirects()
         ->put(route('password.update'), [
             'current_password' => 'Password1#',
             'password' => 'Password12#',
             'password_confirmation' => 'Password12#',
-        ]);
-
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect(route('security.edit'));
-
-    $this->assertTrue(Hash::check('Password12#', $user->refresh()->password));
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+        );
 });
 
 test('correct password must be provided to update password', function () {
-    $user = User::factory()->create(
-        ['password' => Hash::make('Password1#')]
-    );
+    $user = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
 
-    $response = $this
-        ->actingAs($user)
-        ->from(route('security.edit'))
+    $this->get(route('login'));
+
+    $this
+        ->followingRedirects()
+        ->post(route('login.post'), [
+            'email' => $user->email,
+            'password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Dashboard')
+        );
+
+    $this->get(route('security.edit'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+            ->where('errors', [])
+        );
+
+    $this
+        ->followingRedirects()
         ->put(route('password.update'), [
-            'current_password' => 'Password1s#',
+            'current_password' => 'InvalidPassword',
             'password' => 'Password12#',
             'password_confirmation' => 'Password12#',
-        ]);
-
-    $response
-        ->assertSessionHasErrors('current_password')
-        ->assertRedirect(route('security.edit'));
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+            ->where('errors.current_password', 'Current password is incorrect.')
+        );
 });
