@@ -3,7 +3,7 @@
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
-test('user can delete their account', function () {
+test('profile updates with same email', function () {
     $user = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
 
     $this->get(route('login'));
@@ -27,18 +27,27 @@ test('user can delete their account', function () {
 
     $this
         ->followingRedirects()
-        ->delete(route('profile.destroy'), [
-            'current_password' => 'Password1#',
+        ->patch(route('profile.update'), [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => $user->email,
+            'date_of_birth' => '1992-12-01',
+            'gender' => 'male',
         ])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('Auth/Login')
+            ->component('Profile/Edit')
+            ->where('auth.user.email', $user->email)
+            ->where('auth.user.profile.first_name', 'John')
+            ->where('auth.user.profile.last_name', 'Doe')
+            ->where('auth.user.profile.date_of_birth', '1992-12-01')
+            ->where('auth.user.profile.gender', 'male')
         );
 
-    $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    $this->assertNotNull($user->refresh()->email_verified_at);
 });
 
-test('correct password must be provided to delete account', function () {
+test('profile updated with new email', function () {
     $user = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
 
     $this->get(route('login'));
@@ -62,15 +71,22 @@ test('correct password must be provided to delete account', function () {
 
     $this
         ->followingRedirects()
-        ->delete(route('profile.destroy'), [
-            'current_password' => 'Password1234#',
+        ->patch(route('profile.update'), [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'new@email.com',
+            'date_of_birth' => '1992-12-01',
+            'gender' => 'male',
         ])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Profile/Edit')
-            ->has('errors')
-            ->where('errors.current_password', 'Current password is incorrect.')
+            ->where('auth.user.email', 'new@email.com')
+            ->where('auth.user.profile.first_name', 'John')
+            ->where('auth.user.profile.last_name', 'Doe')
+            ->where('auth.user.profile.date_of_birth', '1992-12-01')
+            ->where('auth.user.profile.gender', 'male')
         );
 
-    $this->assertDatabaseHas('users', ['id' => $user->id]);
+    $this->assertNull($user->refresh()->email_verified_at);
 });
