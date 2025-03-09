@@ -30,6 +30,7 @@ Route::middleware([
     Route::middleware('auth')->group(function () {
         Route::get('/users', [UsersController::class, 'index'])->name('users');
         Route::post('/users', [UsersController::class, 'store'])->name('users.store');
+        Route::put('/user/{user}', [UsersController::class, 'update'])->name('users.update');
     });
 
     require __DIR__.'/guest-common.php';

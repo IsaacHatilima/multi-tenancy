@@ -21,58 +21,33 @@ class TenantAction
         $query = Tenant::query()->with(['domain', 'createdBy.profile', 'updatedBy.profile'])->orderBy('id', $request->sorting ?: 'desc');
 
         if ($request->filled('tenant_number')) {
-            $query->where('tenant_number', 'ILIKE', '%'.$request->tenant_number.'%');
+            $query->where('tenant_number', 'like', '%'.strtoupper($request->tenant_number).'%');
         }
 
         if ($request->filled('name')) {
-            $query->where('name', 'ILIKE', '%'.$request->name.'%');
+            $query->where('name', 'like', '%'.strtoupper($request->name).'%');
         }
 
         if ($request->filled('domain')) {
             $query->whereHas('domain', function ($q) use ($request) {
-                $q->where('domain', 'ILIKE', '%'.$request->domain.'%');
+                $q->where('domain', 'like', '%'.strtolower($request->domain).'%');
             });
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->where('status', strtolower($request->status));
         }
 
         if ($request->filled('contact_name')) {
             $query->where(function ($query) use ($request) {
-                $query->where('contact_first_name', 'ILIKE', '%'.$request->contact_name.'%')
-                    ->orWhere('contact_last_name', 'ILIKE', '%'.$request->contact_name.'%');
+                $query->where('contact_first_name', 'like', '%'.ucwords($request->contact_name).'%')
+                    ->orWhere('contact_last_name', 'like', '%'.ucwords($request->contact_name).'%');
             });
         }
 
         $query->orderBy('id', $request->sorting ?: 'desc');
 
         return $query->paginate(10)->withQueryString();
-    }
-
-    public function get_tenant_users($tenant, $request)
-    {
-        return $tenant->run(function () use ($request) {
-            $query = User::query()->with('profile')->orderBy('created_at', 'DESC');
-
-            if ($request->filled('first_name')) {
-                $query->whereHas('profile', function ($q) use ($request) {
-                    $q->where('first_name', 'ILIKE', '%'.$request->first_name.'%');
-                });
-            }
-
-            if ($request->filled('last_name')) {
-                $query->whereHas('profile', function ($q) use ($request) {
-                    $q->where('last_name', 'ILIKE', '%'.$request->last_name.'%');
-                });
-            }
-
-            if ($request->filled('email')) {
-                $query->where('email', 'ILIKE', '%'.$request->email.'%');
-            }
-
-            return $query->paginate(10)->withQueryString()->toArray();
-        });
     }
 
     public function create_tenant($request)

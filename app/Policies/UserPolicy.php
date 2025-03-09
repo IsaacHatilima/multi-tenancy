@@ -26,17 +26,17 @@ class UserPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Tenant $tenant): bool
     {
-        return false;
+        return $user->tenant_id == $tenant->id;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, Tenant $tenant): bool
     {
-        return false;
+        return $user->tenant_id == $tenant->id;
     }
 
     /**

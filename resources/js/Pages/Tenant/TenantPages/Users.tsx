@@ -1,9 +1,10 @@
 import TablePagination from '@/Components/TablePagination';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import CreateUser from '@/Pages/Tenant/TenantPages/CreateUser';
+import EditUser from '@/Pages/Tenant/TenantPages/EditUser';
 import { PaginatedUsers, TenantUserFilter, User } from '@/types/user';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { Card, Table, TextInput } from '@mantine/core';
+import { Badge, Card, Table, TextInput } from '@mantine/core';
 import { debounce } from 'lodash';
 import { useEffect } from 'react';
 
@@ -22,6 +23,18 @@ function Users() {
             <Table.Td>{user.profile.first_name}</Table.Td>
             <Table.Td>{user.profile.last_name}</Table.Td>
             <Table.Td>{user.email}</Table.Td>
+            <Table.Td>
+                <Badge
+                    color={user.email_verified_at != null ? 'green' : 'red'}
+                    variant="outline"
+                    size="sm"
+                >
+                    {user.email_verified_at != null ? 'Verified' : 'Unverified'}
+                </Badge>
+            </Table.Td>
+            <Table.Td>
+                <EditUser user={user} />
+            </Table.Td>
         </Table.Tr>
     ));
 
@@ -82,6 +95,8 @@ function Users() {
                             <Table.Th>First Name</Table.Th>
                             <Table.Th>Last Name</Table.Th>
                             <Table.Th>Email</Table.Th>
+                            <Table.Th>Email Verified</Table.Th>
+                            <Table.Th>Action</Table.Th>
                         </Table.Tr>
                         <Table.Tr>
                             <Table.Th>
