@@ -51,6 +51,9 @@ test('tenant can be created', function ($data) {
         );
 
     $this->assertDatabaseHas('tenants', ['name' => 'TIKTOK']);
+
+    tenancy()->end();
+
 })->with([
     'data' => [$data],
 ]);
@@ -96,6 +99,7 @@ test('tenant cannot be created with missing fields', function ($data) {
         );
 
     $this->assertDatabaseMissing('tenants', ['name' => 'TIKTOK']);
+    tenancy()->end();
 })->with([
     'data' => [$data],
 ]);
