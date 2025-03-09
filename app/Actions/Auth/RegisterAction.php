@@ -4,9 +4,10 @@ namespace App\Actions\Auth;
 
 use App\Actions\Profile\ProfileManagerAction;
 use App\Models\User;
+use App\Notifications\UserPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 
-class RegisterAction
+readonly class RegisterAction
 {
     /**
      * Create a new class instance.
@@ -32,18 +33,45 @@ class RegisterAction
 
     public function create_user($request)
     {
-        // TODO: generate password and email it to user
+        $password = $this->generateStrongPassword();
+
         $user = User::create([
             'tenant_id' => tenant()->id,
             'email' => $request->email,
-            'password' => 'Password1#',
+            'password' => $password,
         ]);
 
         $this->profileManagerAction->create_profile($request, $user);
 
+        $user->notify(new UserPasswordNotification($user, $password, tenant()));
         $user->notify(new VerifyEmailNotification($user));
 
         return $user;
+    }
+
+    private function generateStrongPassword(): string
+    {
+        $upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+        $numbers = '0123456789';
+        $specialChars = '!@#$%^&*()-_=+<>?';
+
+        $password = [
+            $upperCase[random_int(0, strlen($upperCase) - 1)],
+            $lowerCase[random_int(0, strlen($lowerCase) - 1)],
+            $numbers[random_int(0, strlen($numbers) - 1)],
+            $specialChars[random_int(0, strlen($specialChars) - 1)],
+        ];
+
+        $allCharacters = $upperCase.$lowerCase.$numbers.$specialChars;
+
+        for ($i = 4; $i < 16; $i++) {
+            $password[] = $allCharacters[random_int(0, strlen($allCharacters) - 1)];
+        }
+
+        shuffle($password);
+
+        return implode('', $password);
     }
 
     public function googleRegister($request)
