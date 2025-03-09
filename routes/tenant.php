@@ -32,7 +32,7 @@ Route::middleware([
         Route::post('/users', [UsersController::class, 'store'])->name('users.store');
     });
 
-    //    require __DIR__.'/guest-common.php';
+    require __DIR__.'/guest-common.php';
 
     require __DIR__.'/protected-common.php';
 });

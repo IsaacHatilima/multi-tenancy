@@ -8,7 +8,7 @@ function CreateUser() {
     const [openCreateTenantModal, createTenantModalManager] =
         useDisclosure(false);
     const { data, setData, errors, post, reset } = useForm({
-        email: 'isaachatilima@gmail.com',
+        email: '',
         first_name: '',
         last_name: '',
     });

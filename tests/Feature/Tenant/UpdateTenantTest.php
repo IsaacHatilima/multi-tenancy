@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Tenant;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -19,16 +18,9 @@ $data = [
 ];
 
 test('tenant can be updated', function ($data) {
-    $dataToCreateWith = $data;
-
     $user = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
 
-    $tenants = Tenant::count();
-    $tenantNumber = 'TN-'.str_pad($tenants + 1, 4, '0', STR_PAD_LEFT);
-
-    $dataToCreateWith['created_by'] = $user->id;
-    $dataToCreateWith['tenant_number'] = $tenantNumber;
-    $tenant = Tenant::factory()->create($dataToCreateWith);
+    $tenant = createTenant($user, 'central');
 
     $this->get(route('login'));
 
@@ -84,16 +76,9 @@ test('tenant can be updated', function ($data) {
 ]);
 
 test('tenant cannot be updated', function ($data) {
-    $dataToCreateWith = $data;
-
     $user = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
 
-    $tenants = Tenant::count();
-    $tenantNumber = 'TN-'.str_pad($tenants + 1, 4, '0', STR_PAD_LEFT);
-
-    $dataToCreateWith['created_by'] = $user->id;
-    $dataToCreateWith['tenant_number'] = $tenantNumber;
-    $tenant = Tenant::factory()->create($dataToCreateWith);
+    $tenant = createTenant($user, 'central');
 
     $this->get(route('login'));
 

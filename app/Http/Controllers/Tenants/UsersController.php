@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenants;
 use App\Actions\Auth\RegisterAction;
 use App\Actions\TenantAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateTenantUsersRequest;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class UsersController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(CreateTenantUsersRequest $request)
     {
         $this->registerAction->create_user($request);
 

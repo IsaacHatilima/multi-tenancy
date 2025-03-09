@@ -32,6 +32,7 @@ class RegisterAction
 
     public function create_user($request)
     {
+        // TODO: generate password and email it to user
         $user = User::create([
             'tenant_id' => tenant()->id,
             'email' => $request->email,
