@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,20 +17,20 @@ class LoginController extends Controller
     {
         return Inertia::render('Auth/Login', [
             'status' => session('status'),
+            'socialAuth' => [
+                'google' => config('auth.socialAuth.google'),
+                'github' => config('auth.socialAuth.github'),
+                'facebook' => config('auth.socialAuth.facebook'),
+            ],
         ]);
     }
 
-    public function authenticate(Request $request)
+    public function authenticate(LoginRequest $request)
     {
-        // TODO: Create Login request
-        //       move logic to action class
+        // TODO:
         //       add email 2FA
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
 
             session(['tenant_id' => tenant('id')]);

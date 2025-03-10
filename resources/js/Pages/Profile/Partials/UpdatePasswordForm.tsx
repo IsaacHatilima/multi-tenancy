@@ -6,7 +6,7 @@ import { FormEventHandler } from 'react';
 
 export default function UpdatePasswordForm() {
     const [loading, { open, close }] = useDisclosure();
-    const social_auth = usePage().props.auth.social_auth;
+    const social_auth = usePage().props.social_auth;
 
     const { data, setData, errors, put, reset } = useForm({
         current_password: '',
