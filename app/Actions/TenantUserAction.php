@@ -103,4 +103,15 @@ class TenantUserAction
         $user->profile->save();
         $user->save();
     }
+
+    public function toggle_user_status($user): void
+    {
+        $user->is_active = ! $user->is_active;
+        $user->save();
+    }
+
+    public function delete_user($user): void
+    {
+        $user->delete();
+    }
 }

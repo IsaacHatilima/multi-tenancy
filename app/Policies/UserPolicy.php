@@ -42,9 +42,9 @@ class UserPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, Tenant $tenant): bool
     {
-        return false;
+        return $user->tenant_id == $tenant->id;
     }
 
     /**

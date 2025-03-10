@@ -6,6 +6,7 @@ use App\Actions\Auth\RegisterAction;
 use App\Actions\TenantAction;
 use App\Actions\TenantUserAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\CurrentPasswordRequest;
 use App\Http\Requests\CreateTenantUsersRequest;
 use App\Http\Requests\UpdateTenantUserRequest;
 use App\Models\User;
@@ -36,7 +37,7 @@ class UsersController extends Controller
 
         return Inertia::render('Tenant/TenantPages/Users', [
             'users' => $this->tenantUserAction->get_tenant_users(tenant(), $request),
-            'filters' => $request->all(),
+            'filters' => $request->only(['first_name', 'last_name', 'email']),
         ]);
     }
 
@@ -53,6 +54,22 @@ class UsersController extends Controller
     {
         $this->authorize('update', [User::class, tenant()]);
         $this->tenantUserAction->update_profile($request, $user);
+
+        return redirect()->back();
+    }
+
+    public function destroy(CurrentPasswordRequest $request, User $user)
+    {
+        $this->authorize('delete', [User::class, tenant()]);
+        $this->tenantUserAction->delete_user($user);
+
+        return redirect()->back();
+    }
+
+    public function toggle_status(CurrentPasswordRequest $request, User $user)
+    {
+        $this->authorize('delete', [User::class, tenant()]);
+        $this->tenantUserAction->toggle_user_status($user);
 
         return redirect()->back();
     }

@@ -31,6 +31,8 @@ Route::middleware([
         Route::get('/users', [UsersController::class, 'index'])->name('users');
         Route::post('/users', [UsersController::class, 'store'])->name('users.store');
         Route::put('/user/{user}', [UsersController::class, 'update'])->name('users.update');
+        Route::delete('/delete-user/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
+        Route::delete('/toggle-user-status/{user}', [UsersController::class, 'toggle_status'])->name('users.toggle');
     });
 
     require __DIR__.'/guest-common.php';

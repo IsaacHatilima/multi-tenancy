@@ -2,6 +2,7 @@ import TablePagination from '@/Components/TablePagination';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import CreateUser from '@/Pages/Tenant/TenantPages/CreateUser';
 import EditUser from '@/Pages/Tenant/TenantPages/EditUser';
+import ToggleUserState from '@/Pages/Tenant/TenantPages/Partials/ToggleUserState';
 import { PaginatedUsers, TenantUserFilter, User } from '@/types/user';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { Badge, Card, Table, TextInput } from '@mantine/core';
@@ -32,8 +33,9 @@ function Users() {
                     {user.email_verified_at != null ? 'Verified' : 'Unverified'}
                 </Badge>
             </Table.Td>
-            <Table.Td>
+            <Table.Td className="flex justify-between">
                 <EditUser user={user} />
+                <ToggleUserState user={user} />
             </Table.Td>
         </Table.Tr>
     ));
