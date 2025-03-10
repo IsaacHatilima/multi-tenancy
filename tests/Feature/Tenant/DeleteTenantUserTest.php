@@ -9,7 +9,7 @@ $data = [
     'email' => 'johndoe@mail.com',
 ];
 
-test('tenant user can be updated', function ($data) {
+test('tenant user can be deleted with valid password', function ($data) {
     $centralUser = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
 
     createTenant($centralUser, 'tenant');
@@ -49,24 +49,21 @@ test('tenant user can be updated', function ($data) {
 
     $this
         ->followingRedirects()
-        ->put(route('users.update', $createdUser->id), [
-            'email' => $data['email'],
-            'first_name' => 'John Paul',
-            'last_name' => 'Doe',
+        ->delete(route('users.destroy', $createdUser->id), [
+            'current_password' => 'Password1#',
         ])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Tenant/TenantPages/Users')
         );
 
-    $this->assertDatabaseHas('users', ['email' => $data['email']]);
-    $this->assertDatabaseHas('profiles', ['first_name' => 'John Paul']);
+    $this->assertDatabaseMissing('users', ['email' => $createdUser->email]);
     tenancy()->end();
 })->with([
     'data' => [$data],
 ]);
 
-test('tenant user cannot be updated with missing fields', function ($data) {
+test('tenant user cannot be deleted with invalid password', function ($data) {
     $centralUser = User::factory()->create(['email' => 'user@mail.com', 'password' => Hash::make('Password1#')]);
 
     createTenant($centralUser, 'tenant');
@@ -106,16 +103,14 @@ test('tenant user cannot be updated with missing fields', function ($data) {
 
     $this
         ->followingRedirects()
-        ->put(route('users.update', $createdUser->id), [
-            'email' => null,
-            'first_name' => 'John Paul',
-            'last_name' => 'Doe',
+        ->delete(route('users.destroy', $createdUser->id), [
+            'current_password' => 'Password12#',
         ])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Tenant/TenantPages/Users')
             ->has('errors')
-            ->where('errors.email', 'E-Mail is required.')
+            ->where('errors.current_password', 'Current password is incorrect.')
         );
     tenancy()->end();
 })->with([
