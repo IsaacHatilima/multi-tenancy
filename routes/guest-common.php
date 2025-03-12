@@ -28,6 +28,9 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/', [LoginController::class, 'authenticate'])
         ->name('login.post');
 
+    Route::post('/auth-check', [LoginController::class, 'auth_check'])
+        ->name('login.auth.check');
+
     Route::get('/two-factor-challenge', function () {
         return Inertia::render('Auth/TwoFactorChallenge');
     })->name('two-factor.login');

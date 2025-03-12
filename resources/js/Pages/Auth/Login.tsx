@@ -24,6 +24,8 @@ export default function Login({
     googleError?: string;
 }) {
     const socialAuth = usePage().props.socialAuth as SocialAuthProps;
+    const fortifyAuth = usePage().props.fortifyAuth;
+    const twoFactorType = usePage().props.twoFactorType ?? 'default';
     const [loading, { open, close }] = useDisclosure();
     const { data, setData, post, errors, reset } = useForm<{
         email: string;
@@ -35,12 +37,50 @@ export default function Login({
         remember: false,
     });
 
-    const submit: FormEventHandler = (e) => {
+    const handleFortifyAuth: FormEventHandler = (e) => {
+        e.preventDefault();
+        console.log('fortifyAuth');
+        open();
+        /*post('/login', {
+            onFinish: () => {
+                reset('password');
+            },
+            onError: () => {
+                close();
+            },
+        });*/
+    };
+
+    const handleCustomAuth: FormEventHandler = (e) => {
         e.preventDefault();
         open();
         post('/', {
             onFinish: () => {
                 reset('password');
+            },
+            onError: () => {
+                close();
+            },
+        });
+    };
+
+    const handleFormSubmit: FormEventHandler = (event) => {
+        event.preventDefault();
+        open();
+
+        post(route('login.auth.check'), {
+            onSuccess: () => {
+                if (fortifyAuth && twoFactorType === 'fortify') {
+                    // Fortify is enabled (system level) and user enabled Fortify 2FA
+                    handleFortifyAuth(event);
+                } else {
+                    // Fortify is disabled
+                    handleCustomAuth(event);
+                }
+            },
+            onFinish: () => {
+                reset('password');
+                close();
             },
             onError: () => {
                 close();
@@ -64,7 +104,7 @@ export default function Login({
                 </Alert>
             )}
 
-            <form onSubmit={submit}>
+            <form onSubmit={handleFormSubmit}>
                 <TextInput
                     id="email"
                     name="email"

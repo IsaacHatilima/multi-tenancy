@@ -34,6 +34,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'is_active',
         'last_login_at',
+        'two_factor_type',
+        'two_factor_code',
+        'two_factor_expires_at',
     ];
 
     /**

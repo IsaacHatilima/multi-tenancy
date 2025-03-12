@@ -118,6 +118,6 @@ return [
         'facebook' => env('FACEBOOK_SOCIAL_AUTH', false),
     ],
 
-    'env' => env('FORTIFY_AUTH', 'false'),
+    'fortify_auth' => env('FORTIFY_AUTH', 'false'),
 
 ];
