@@ -17,12 +17,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/security', [SecurityController::class, 'edit'])->name('security.edit');
     Route::put('/security', [SecurityController::class, 'copy_recovery_codes'])->name('security.put');
+    Route::put('/password', [SecurityController::class, 'update'])->name('password.update');
+    Route::put('/manage-email-two-factor/{type}', [SecurityController::class, 'email_two_factor'])->name('email.fa');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
-
-    Route::put('password', [SecurityController::class, 'update'])->name('password.update');
 
     // Using /logout conflicts with fortify route preventing tenant from login out
     Route::post('/sign-out', [LogoutController::class, 'destroy'])->name('sign.out');

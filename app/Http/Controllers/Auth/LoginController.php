@@ -28,7 +28,7 @@ class LoginController extends Controller
     /**
      * Display the login view.
      */
-    public function auth_type($email)
+    public static function auth_type($email)
     {
         return User::where('email', $email)->first()?->two_factor_type;
     }

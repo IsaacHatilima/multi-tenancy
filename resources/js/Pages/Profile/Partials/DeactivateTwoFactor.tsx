@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -16,6 +16,10 @@ function DeactivateTwoFactor({ refreshUser }: { refreshUser: () => void }) {
         password: '',
     });
 
+    const changeAuthType = () => {
+        router.put(route('email.fa', 'disable'));
+    };
+
     const handleDeactivateTwoFactor = () => {
         openLoading();
         axios
@@ -27,6 +31,7 @@ function DeactivateTwoFactor({ refreshUser }: { refreshUser: () => void }) {
                     message: '2FA has been de-activated.',
                     color: 'green',
                 });
+                changeAuthType();
                 closeModal();
                 closeLoading();
             })

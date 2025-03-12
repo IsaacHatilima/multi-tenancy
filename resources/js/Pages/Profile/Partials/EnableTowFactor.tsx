@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -35,6 +35,10 @@ function EnableTowFactor({ refreshUser }: { refreshUser: () => void }) {
         }
     };
 
+    const changeAuthType = () => {
+        router.put(route('email.fa', 'fortify'));
+    };
+
     const handleActivateTwoFactor = () => {
         openLoading();
         axios
@@ -46,6 +50,7 @@ function EnableTowFactor({ refreshUser }: { refreshUser: () => void }) {
                     message: '2FA has been enabled.',
                     color: 'green',
                 });
+                changeAuthType();
                 closeModal();
                 closeLoading();
             })

@@ -54,6 +54,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Profile::class);
     }
 
+    public function generateTwoFactorCode(): void
+    {
+        $this->timestamps = false;
+        $this->two_factor_code = rand(100000, 999999);
+        $this->two_factor_expires_at = now()->addMinutes(5);
+        $this->save();
+    }
+
     /**
      * Get the attributes that should be cast.
      *
