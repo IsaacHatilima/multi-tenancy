@@ -49,7 +49,6 @@ class LoginController extends Controller
 
     public function authenticate(LoginRequest $request)
     {
-        // TODO: update test
         $user = $this->get_user($request->email);
 
         if ($user && Hash::check($request->password, $user->password) && $user->two_factor_type == 'custom') {
@@ -85,7 +84,6 @@ class LoginController extends Controller
 
     public function email_two_factor(): Response
     {
-        // TODO: Write test
         return Inertia::render('Auth/EmailTwoFactor', [
             'codeRequested' => session()->pull('codeRequested'),
         ]);
@@ -93,7 +91,6 @@ class LoginController extends Controller
 
     public function email_two_factor_authenticate(Request $request)
     {
-        // TODO: Write test
         $user = User::where('two_factor_code', $request->code)->first();
 
         if ($user && now() > $user->two_factor_expires_at) {
@@ -115,7 +112,6 @@ class LoginController extends Controller
 
     public function request_new_code()
     {
-        // TODO: Write test
         $user = $this->get_user(session('email'));
         $user->generateTwoFactorCode();
         $user->notify(new SendTwoFactorCode);
