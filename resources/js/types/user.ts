@@ -7,6 +7,9 @@ export interface User {
     two_factor_secret?: string;
     two_factor_recovery_codes?: string;
     two_factor_confirmed_at?: string;
+    two_factor_type?: string;
+    two_factor_code?: string;
+    two_factor_expires_at?: string;
     copied_codes?: boolean;
     is_active: boolean;
     role: string;

@@ -19,7 +19,6 @@ class SecurityController extends Controller
     {
         return Inertia::render('Profile/Security', [
             'otpCode' => auth()->user()->two_factor_secret ? decrypt(auth()->user()->two_factor_secret) : '',
-            'twoFactorType' => LoginController::auth_type(auth()->user()->email),
             'fortify' => config('fortify.auth'),
             'social_auth' => $request->user()?->password === null,
         ]);

@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TwoFactorConfig from '@/Pages/Profile/Partials/TwoFactorConfig';
+import { User } from '@/types/user';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { Button, Card, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -9,7 +10,7 @@ import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 
 function Security() {
     const fortify: boolean = usePage().props.fortify as boolean;
-    const twoFactorType: string = usePage().props.twoFactorType as string;
+    const user: User = usePage().props.auth.user;
     const [openCreateTenantModal, createTenantModalManager] =
         useDisclosure(false);
     const passwordInput = useRef<HTMLInputElement>(null);
@@ -22,7 +23,7 @@ function Security() {
         e.preventDefault();
         open();
 
-        const type = twoFactorType != 'custom' ? 'custom' : 'disable';
+        const type = user.two_factor_type != 'custom' ? 'custom' : 'disable';
 
         put(route('email.fa', { type }), {
             preserveScroll: true,
@@ -57,7 +58,7 @@ function Security() {
                         <UpdatePasswordForm />
                     </Card>
 
-                    {twoFactorType != 'fortify' && (
+                    {user.two_factor_type != 'fortify' && (
                         <Card
                             shadow="sm"
                             padding="lg"
@@ -83,7 +84,7 @@ function Security() {
                                     title="Enable E-Mail Two Factor Authentication"
                                 >
                                     <p className="font-semibold">
-                                        {twoFactorType == 'custom'
+                                        {user.two_factor_type == 'custom'
                                             ? 'Are you sure you want to make this change?'
                                             : 'Hurray for extra protection!'}
                                     </p>
@@ -116,7 +117,7 @@ function Security() {
                                                     fullWidth
                                                     variant="filled"
                                                     color={
-                                                        twoFactorType ==
+                                                        user.two_factor_type ==
                                                         'custom'
                                                             ? 'red'
                                                             : 'green'
@@ -127,7 +128,8 @@ function Security() {
                                                         type: 'dots',
                                                     }}
                                                 >
-                                                    {twoFactorType == 'custom'
+                                                    {user.two_factor_type ==
+                                                    'custom'
                                                         ? 'De-Activate 2FA'
                                                         : 'Activate 2FA'}
                                                 </Button>
@@ -139,7 +141,7 @@ function Security() {
                                 <Button
                                     variant="filled"
                                     color={
-                                        twoFactorType == 'custom'
+                                        user.two_factor_type == 'custom'
                                             ? 'red'
                                             : 'black'
                                     }
@@ -147,7 +149,7 @@ function Security() {
                                         createTenantModalManager.open();
                                     }}
                                 >
-                                    {twoFactorType == 'custom'
+                                    {user.two_factor_type == 'custom'
                                         ? 'Disable E-Mail Two Factor AuthenticationA'
                                         : 'Enable E-Mail Two Factor Authentication'}
                                 </Button>
