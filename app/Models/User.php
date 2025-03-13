@@ -11,8 +11,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
@@ -26,6 +24,11 @@ class User extends Authenticatable implements MustVerifyEmail
     /*protected $guarded = [
         'id',
     ];*/
+
+    /*
+     * Because this is a shared model, using fillable instead of guarded
+     * as it throws an error on tenant create with tenant_id null.
+     * */
 
     protected $fillable = [
         'tenant_id',
