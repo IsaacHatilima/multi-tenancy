@@ -15,6 +15,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    require __DIR__.'/auth/security.php';
+
     Route::get('/security', [SecurityController::class, 'edit'])->name('security.edit');
     Route::put('/security', [SecurityController::class, 'copy_recovery_codes'])->name('security.put');
     Route::put('/password', [SecurityController::class, 'update'])->name('password.update');

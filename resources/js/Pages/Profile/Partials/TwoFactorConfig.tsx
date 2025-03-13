@@ -30,16 +30,6 @@ function TwoFactorConfig() {
         });
     };
 
-    function refreshUser() {
-        router.get(
-            route('security.edit'),
-            {},
-            {
-                preserveScroll: true,
-            },
-        );
-    }
-
     useEffect(() => {
         if (user.two_factor_secret && !user.copied_codes) {
             handleGetTwoFactorQRCode();
@@ -48,23 +38,20 @@ function TwoFactorConfig() {
     });
 
     const handleCopiedCodes = () => {
-        axios
-            .put(route('security.put'))
-            .then(() => {
-                refreshUser();
-                notifications.show({
-                    title: 'Success',
-                    message: '2FA recovery codes copied.',
-                    color: 'green',
-                });
-            })
-            .catch(() => {
-                notifications.show({
-                    title: 'Warning',
-                    message: 'Unable to copy 2FA recovery codes.',
-                    color: 'yellow',
-                });
-            });
+        router.put(
+            route('security.put'),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    notifications.show({
+                        title: 'Success',
+                        message: '2FA recovery codes copied..',
+                        color: 'green',
+                    });
+                },
+            },
+        );
     };
 
     const handleDownloadCodes = () => {
@@ -134,7 +121,7 @@ function TwoFactorConfig() {
             user.two_factor_recovery_codes &&
             user.two_factor_confirmed_at ? (
                 <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
-                    <DeactivateTwoFactor refreshUser={refreshUser} />
+                    <DeactivateTwoFactor />
                     {!user.copied_codes && (
                         <div className="mt-2">
                             <Button
@@ -151,11 +138,11 @@ function TwoFactorConfig() {
                 </div>
             ) : user.two_factor_secret && user.two_factor_recovery_codes ? (
                 <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
-                    <DeactivateTwoFactor refreshUser={refreshUser} />
-                    <ConfirmTwoFactor refreshUser={refreshUser} />
+                    <DeactivateTwoFactor />
+                    <ConfirmTwoFactor />
                 </div>
             ) : (
-                <EnableTowFactor refreshUser={refreshUser} />
+                <EnableTowFactor />
             )}
         </section>
     );

@@ -2,66 +2,41 @@ import { router, useForm } from '@inertiajs/react';
 import { Button, Modal, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import axios from 'axios';
-import React, { useState } from 'react';
+import { FormEventHandler } from 'react';
 
-function EnableTowFactor({ refreshUser }: { refreshUser: () => void }) {
+function EnableTowFactor() {
     const [opened, { open: openModal, close: closeModal }] =
         useDisclosure(false);
     const [loading, { open: openLoading, close: closeLoading }] =
         useDisclosure();
-    const [errors, setErrors] = useState<{ password?: string }>({});
 
-    const { data, setData } = useForm({
-        password: '',
+    const { data, setData, errors, put } = useForm({
+        current_password: '',
     });
 
-    const handleTwoFAPasswordConfirm = (e: React.FormEvent) => {
+    const handleTwoFAPasswordConfirm: FormEventHandler = (e) => {
         e.preventDefault();
         openLoading();
 
-        if (data.password !== '') {
-            axios
-                .post('/user/confirm-password', { password: data.password })
-                .then(() => {
-                    handleActivateTwoFactor();
-                })
-                .catch(() => {
-                    setErrors({ password: 'Invalid Password.' });
-                });
-        } else {
-            setErrors({ password: 'Password is required.' });
-            closeLoading();
-        }
-    };
-
-    const changeAuthType = () => {
-        router.put(route('email.fa', 'fortify'));
-    };
-
-    const handleActivateTwoFactor = () => {
-        openLoading();
-        axios
-            .post('/user/two-factor-authentication')
-            .then(() => {
-                refreshUser();
+        put(route('enable.fortify'), {
+            preserveScroll: true,
+            onSuccess: () => {
                 notifications.show({
                     title: 'Success',
                     message: '2FA has been enabled.',
                     color: 'green',
                 });
-                changeAuthType();
+                router.put(route('email.fa', 'fortify'), {
+                    current_password: data.current_password,
+                });
                 closeModal();
                 closeLoading();
-            })
-            .catch(() => {
-                notifications.show({
-                    title: 'Warning',
-                    message: 'Unable to enable 2FA.',
-                    color: 'yellow',
-                });
-                closeLoading();
-            });
+            },
+            onError: () => {},
+            onFinish: () => {
+                close();
+            },
+        });
     };
 
     return (
@@ -81,13 +56,13 @@ function EnableTowFactor({ refreshUser }: { refreshUser: () => void }) {
                             mt="xl"
                             label="Password"
                             placeholder="Password"
-                            error={errors.password}
+                            error={errors.current_password}
                             withAsterisk
                             inputWrapperOrder={['label', 'input', 'error']}
-                            name="password"
-                            value={data.password}
+                            name="current_password"
+                            value={data.current_password}
                             onChange={(e) =>
-                                setData('password', e.target.value)
+                                setData('current_password', e.target.value)
                             }
                             autoFocus={true}
                         />

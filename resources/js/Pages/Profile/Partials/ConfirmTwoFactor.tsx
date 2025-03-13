@@ -2,43 +2,38 @@ import { useForm } from '@inertiajs/react';
 import { Button, Modal, PinInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import axios from 'axios';
-import React from 'react';
+import { FormEventHandler } from 'react';
 
-function ConfirmTwoFactor({ refreshUser }: { refreshUser: () => void }) {
+function ConfirmTwoFactor() {
     const [opened, { open: openModal, close: closeModal }] =
         useDisclosure(false);
     const [loading, { open: openLoading, close: closeLoading }] =
         useDisclosure();
-    const { data, setData } = useForm({
+    const { data, setData, errors, put } = useForm({
         code: '',
     });
 
-    const handleConfirmTwoFactor = (e: React.FormEvent) => {
+    const handleConfirmTwoFactor: FormEventHandler = (e) => {
         e.preventDefault();
         openLoading();
-        axios
-            .post('/user/confirmed-two-factor-authentication', {
-                code: data.code,
-            })
-            .then(() => {
-                refreshUser();
+
+        put(route('confirm.fortify'), {
+            preserveScroll: true,
+            onSuccess: () => {
                 notifications.show({
                     title: 'Success',
                     message: '2FA has been confirmed.',
                     color: 'green',
                 });
+
                 closeModal();
                 closeLoading();
-            })
-            .catch(() => {
-                notifications.show({
-                    title: 'Warning',
-                    message: 'Unable to confirm 2FA.',
-                    color: 'yellow',
-                });
-                closeLoading();
-            });
+            },
+            onError: () => {},
+            onFinish: () => {
+                close();
+            },
+        });
     };
 
     return (
@@ -61,6 +56,7 @@ function ConfirmTwoFactor({ refreshUser }: { refreshUser: () => void }) {
                             length={6}
                             inputMode="numeric"
                             name="code"
+                            error={!!errors.code}
                             value={data.code}
                             onChange={(value: string) => setData('code', value)}
                             autoFocus={true}

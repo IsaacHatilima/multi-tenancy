@@ -40,6 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'two_factor_type',
         'two_factor_code',
         'two_factor_expires_at',
+        'copied_codes',
     ];
 
     /**
