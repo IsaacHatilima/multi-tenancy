@@ -100,10 +100,7 @@ class LoginController extends Controller
         }
 
         if ($user) {
-            $user->update([
-                'two_factor_code' => null,
-                'two_factor_expires_at' => null,
-            ]);
+            $user->resetTwoFactorCode();
 
             $this->login($user, $request);
         }
