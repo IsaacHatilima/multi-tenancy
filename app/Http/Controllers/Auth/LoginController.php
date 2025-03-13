@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use App\Notifications\SendTwoFactorCode;
+use Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -46,19 +49,78 @@ class LoginController extends Controller
 
     public function authenticate(LoginRequest $request)
     {
-        // TODO:
-        //       add email 2FA
+        $user = $this->get_user($request->email);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $request->session()->regenerate();
+        if ($user && Hash::check($request->password, $user->password) && $user->two_factor_type == 'custom') {
+            $user->generateTwoFactorCode();
+            $user->notify(new SendTwoFactorCode);
 
-            session(['tenant_id' => tenant('id')]);
+            return redirect()->route('login.email.two.factor');
+        }
 
-            return redirect()->intended(route('dashboard'));
+        if ($user && $user->two_factor_type == null) {
+            $this->login($user, $request);
         }
 
         return back()->withErrors([
             'email' => 'Invalid E-mail or Password provided.',
         ])->onlyInput('email');
+    }
+
+    private function get_user($email)
+    {
+        return User::where('email', $email)->first();
+    }
+
+    private function login($user, $request)
+    {
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        session(['tenant_id' => tenant('id')]);
+
+        return redirect()->intended(route('dashboard'));
+    }
+
+    public function email_two_factor(): Response
+    {
+        return Inertia::render('Auth/EmailTwoFactor', [
+            'codeRequested' => session()->pull('codeRequested'),
+        ]);
+    }
+
+    public function email_two_factor_authenticate(Request $request)
+    {
+        $user = User::where('two_factor_code', $request->code)->first();
+
+        if ($user && now() > $user->two_factor_expires_at) {
+            return back()->withErrors([
+                'code' => 'Invalid or Expired code provided.',
+            ]);
+        }
+
+        if ($user) {
+            $user->update([
+                'two_factor_code' => null,
+                'two_factor_expires_at' => null,
+            ]);
+
+            $this->login($user, $request);
+        }
+
+        return back()->withErrors([
+            'code' => 'Invalid or Expired code provided.',
+        ]);
+    }
+
+    public function request_new_code()
+    {
+        $user = $this->get_user(session('email'));
+        $user->generateTwoFactorCode();
+        $user->notify(new SendTwoFactorCode);
+
+        session(['codeRequested' => 'We have sent you a new code to your email.']);
+
+        return redirect()->back();
     }
 }

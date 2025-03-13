@@ -58,7 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->timestamps = false;
         $this->two_factor_code = rand(100000, 999999);
-        $this->two_factor_expires_at = now()->addMinutes(5);
+        $this->two_factor_expires_at = now()->addMinutes(1);
         $this->save();
     }
 
