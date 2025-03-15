@@ -51,15 +51,18 @@ class LoginController extends Controller
     {
         $user = $this->get_user($request->email);
 
-        if ($user && Hash::check($request->password, $user->password) && $user->two_factor_type == 'custom') {
-            $user->generateTwoFactorCode();
-            $user->notify(new SendTwoFactorCode);
+        if ($user && Hash::check($request->password, $user->password)) {
 
-            return redirect()->route('login.email.two.factor');
-        }
+            if ($user->two_factor_type == 'custom') {
+                $user->generateTwoFactorCode();
+                $user->notify(new SendTwoFactorCode);
 
-        if ($user && $user->two_factor_type == null) {
-            $this->login($user, $request);
+                return redirect()->route('login.email.two.factor');
+            }
+
+            if ($user->two_factor_type == null) {
+                $this->login($user, $request);
+            }
         }
 
         return back()->withErrors([

@@ -16,7 +16,9 @@ test('login screen renders correct Inertia page', function () {
 });
 
 test('user can login', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'password' => Hash::make('Password1#'),
+    ]);
 
     $this->get(route('login'));
 
@@ -60,7 +62,7 @@ test('users can not authenticate with invalid password', function () {
         ->followingRedirects()
         ->post(route('login'), [
             'email' => $user->email,
-            'password' => 'Password12#',
+            'password' => 'InvalidPassword#',
         ])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
