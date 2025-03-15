@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Inertia\Testing\AssertableInertia as Assert;
 use PragmaRX\Google2FA\Google2FA;
 
 test('user can confirm 2FA', function () {
@@ -8,26 +9,54 @@ test('user can confirm 2FA', function () {
         'password' => Hash::make('Password1#'),
     ]);
 
-    $this->actingAs($user)->post('/user/confirm-password', [
-        'password' => 'Password1#',
-    ]);
+    $this->get(route('login'));
 
-    $this->actingAs($user)->post('/user/two-factor-authentication');
+    $this
+        ->followingRedirects()
+        ->post(route('login.post'), [
+            'email' => $user->email,
+            'password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Dashboard')
+        );
+
+    $this->get(route('security.edit'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+            ->where('errors', [])
+        );
+
+    $this
+        ->followingRedirects()
+        ->put(route('enable.fortify'), [
+            'current_password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+        );
+
+    $user->refresh();
 
     $decryptedSecret = Crypt::decrypt($user->two_factor_secret);
 
     $google2fa = new Google2FA;
     $otp = $google2fa->getCurrentOtp($decryptedSecret);
 
-    $response = $this->actingAs($user)->post('/user/confirmed-two-factor-authentication', [
-        'code' => $otp,
-    ]);
-
-    $user->refresh();
-
-    $response->assertStatus(302);
-    $this->assertEquals(session('status'), 'two-factor-authentication-confirmed');
-    $this->assertNotNull($user->two_factor_confirmed_at);
+    $this
+        ->followingRedirects()
+        ->put(route('confirm.fortify'), [
+            'code' => $otp,
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+            ->whereNot('auth.user.two_factor_secret', null)
+            ->whereNot('auth.user.two_factor_recovery_codes', null)
+            ->whereNot('auth.user.two_factor_confirmed_at', null)
+        );
 });
 
 test('user cannot confirm 2FA with wrong password', function () {
@@ -35,19 +64,45 @@ test('user cannot confirm 2FA with wrong password', function () {
         'password' => Hash::make('Password1#'),
     ]);
 
-    $this->actingAs($user)->post('/user/confirm-password', [
-        'password' => 'Password1#',
-    ]);
+    $this->get(route('login'));
 
-    $this->actingAs($user)->post('/user/two-factor-authentication');
+    $this
+        ->followingRedirects()
+        ->post(route('login.post'), [
+            'email' => $user->email,
+            'password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Dashboard')
+        );
 
-    $response = $this->actingAs($user)->post('/user/confirmed-two-factor-authentication', [
-        'code' => '124578',
-    ]);
+    $this->get(route('security.edit'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+            ->where('errors', [])
+        );
 
-    $user->refresh();
+    $this
+        ->followingRedirects()
+        ->put(route('enable.fortify'), [
+            'current_password' => 'Password1#',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+        );
 
-    $response->assertStatus(302);
-    $this->assertNull(session('status'));
-    $this->assertNull($user->two_factor_confirmed_at);
+    $this
+        ->followingRedirects()
+        ->put(route('confirm.fortify'), [
+            'code' => '123987',
+        ])
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Profile/Security')
+            ->whereNot('auth.user.two_factor_secret', null)
+            ->whereNot('auth.user.two_factor_recovery_codes', null)
+            ->where('auth.user.two_factor_confirmed_at', null)
+        );
 });
