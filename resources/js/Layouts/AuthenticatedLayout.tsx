@@ -40,7 +40,7 @@ export default function Authenticated({
                 </div>
             </AppShell.Header>
             <AppShell.Navbar p="md" withBorder={false} className="shadow-xl">
-                {!tenant ? <CentralSideNav /> : <TenantSideNav />}
+                {!tenant ? <CentralSideNav /> : <TenantSideNav user={user} />}
             </AppShell.Navbar>
             <AppShell.Main>{children}</AppShell.Main>
         </AppShell>
