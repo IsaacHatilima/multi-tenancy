@@ -1,10 +1,9 @@
 import { User } from '@/types/user';
 import { useForm } from '@inertiajs/react';
-import { Button, Modal, NativeSelect, TextInput } from '@mantine/core';
+import { Button, Modal, Select, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { FormEventHandler } from 'react';
-import { MdKeyboardArrowDown } from 'react-icons/md';
 
 function EditUser({ user }: { user: User }) {
     const [openCreateTenantModal, createTenantModalManager] =
@@ -108,27 +107,26 @@ function EditUser({ user }: { user: User }) {
                                     'error',
                                 ]}
                             />
-                            <NativeSelect
-                                rightSection={<MdKeyboardArrowDown size={16} />}
-                                className="w-full"
+                            <Select
                                 mt="md"
                                 label="Role"
-                                withAsterisk
-                                value={data.role}
                                 error={errors.role}
-                                onChange={(e) =>
-                                    setData('role', e.currentTarget.value)
-                                }
+                                value={data.role}
+                                withAsterisk
+                                data={[
+                                    { label: 'Admin', value: 'Admin' },
+                                    { label: 'User', value: 'User' },
+                                ]}
+                                onChange={(_value, option) => {
+                                    setData('role', option.value);
+                                }}
                                 inputWrapperOrder={[
                                     'label',
                                     'input',
                                     'description',
                                     'error',
                                 ]}
-                            >
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                            </NativeSelect>
+                            />
                         </div>
                     </div>
 

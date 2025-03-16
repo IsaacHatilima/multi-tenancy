@@ -1,9 +1,8 @@
 import { useForm } from '@inertiajs/react';
-import { Button, Modal, NativeSelect, TextInput } from '@mantine/core';
+import { Button, Modal, Select, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { FormEventHandler } from 'react';
-import { MdKeyboardArrowDown } from 'react-icons/md';
 
 function CreateUser() {
     const [openCreateTenantModal, createTenantModalManager] =
@@ -107,22 +106,20 @@ function CreateUser() {
                                     'error',
                                 ]}
                             />
-                            <NativeSelect
-                                rightSection={<MdKeyboardArrowDown size={16} />}
-                                className="w-full"
+                            <Select
                                 mt="md"
                                 label="Role"
+                                error={errors.role}
+                                value={data.role}
+                                withAsterisk
                                 data={[
                                     { label: 'Select Role', value: '' },
                                     { label: 'Admin', value: 'admin' },
                                     { label: 'User', value: 'user' },
                                 ]}
-                                withAsterisk
-                                value={data.role}
-                                error={errors.role}
-                                onChange={(e) =>
-                                    setData('role', e.currentTarget.value)
-                                }
+                                onChange={(_value, option) => {
+                                    setData('role', option.value);
+                                }}
                                 inputWrapperOrder={[
                                     'label',
                                     'input',
