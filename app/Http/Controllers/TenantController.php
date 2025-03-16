@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\TenantAction;
+use App\Actions\TenantUserAction;
 use App\Http\Requests\TenantRequest;
 use App\Http\Requests\UpdateTenantRequest;
 use App\Models\Tenant;
@@ -17,9 +18,12 @@ class TenantController extends Controller
 
     private TenantAction $tenantAction;
 
-    public function __construct(TenantAction $tenantAction)
+    private TenantUserAction $tenantUserAction;
+
+    public function __construct(TenantAction $tenantAction, TenantUserAction $tenantUserAction)
     {
         $this->tenantAction = $tenantAction;
+        $this->tenantUserAction = $tenantUserAction;
     }
 
     public function index(Request $request)
@@ -52,8 +56,8 @@ class TenantController extends Controller
         $this->authorize('view', $tenant);
 
         return Inertia::render('Tenant/TenantDetails', [
-            'tenant' => $tenant->load('domain'),
-            'tenant_users' => Inertia::optional(fn () => $this->tenantAction->get_tenant_users($tenant, $request)),
+            'tenant_data' => $tenant->load('domain'),
+            'tenant_users' => Inertia::optional(fn () => $this->tenantUserAction->get_tenant_users($tenant, $request)),
             'filters' => [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,

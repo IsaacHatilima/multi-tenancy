@@ -16,7 +16,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Central database user
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'email' => 'admin@mail.com',
+        ]);
 
         $tenantCount = Tenant::count();
 
