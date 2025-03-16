@@ -7,6 +7,7 @@ $data = [
     'first_name' => 'john',
     'last_name' => 'doe',
     'email' => 'johndoe@mail.com',
+    'role' => 'admin',
 ];
 
 test('tenant user can be created', function ($data) {

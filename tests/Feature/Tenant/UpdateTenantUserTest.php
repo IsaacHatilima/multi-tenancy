@@ -7,6 +7,7 @@ $data = [
     'first_name' => 'john',
     'last_name' => 'doe',
     'email' => 'johndoe@mail.com',
+    'role' => 'admin',
 ];
 
 test('tenant user can be updated', function ($data) {
@@ -53,6 +54,7 @@ test('tenant user can be updated', function ($data) {
             'email' => $data['email'],
             'first_name' => 'John Paul',
             'last_name' => 'Doe',
+            'role' => 'user',
         ])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
@@ -110,6 +112,7 @@ test('tenant user cannot be updated with missing fields', function ($data) {
             'email' => null,
             'first_name' => 'John Paul',
             'last_name' => 'Doe',
+            'role' => 'user',
         ])
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
