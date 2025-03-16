@@ -21,6 +21,8 @@ export interface TenantUserFilter {
     last_name: string | null;
     email: string | null;
     role: string | null;
+    verified: string | null;
+    active: string | null;
 }
 
 export interface Profile {

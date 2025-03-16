@@ -20,6 +20,8 @@ function Users() {
         last_name: filters?.last_name || '',
         email: filters?.email || '',
         role: filters?.role || '',
+        verified: filters?.verified || '',
+        active: filters?.active || '',
     });
 
     const rows = tenantUsers?.data.map((user: User) => (
@@ -48,6 +50,17 @@ function Users() {
                     {user.email_verified_at != null ? 'Verified' : 'Unverified'}
                 </Badge>
             </Table.Td>
+            <Table.Td>
+                <Badge
+                    color={user.is_active ? 'green' : 'red'}
+                    variant="outline"
+                    size="sm"
+                >
+                    <div className="flex items-center gap-2 p-1">
+                        {user.is_active ? 'Active' : 'Inactive'}
+                    </div>
+                </Badge>
+            </Table.Td>
             <Table.Td className="flex gap-4">
                 <EditUser user={user} />
                 <ToggleUserState user={user} />
@@ -73,6 +86,8 @@ function Users() {
         setOrDeleteParam('last_name', data.last_name);
         setOrDeleteParam('email', data.email);
         setOrDeleteParam('role', data.role);
+        setOrDeleteParam('verified', data.verified);
+        setOrDeleteParam('active', data.active);
 
         urlParams.set('page', filtersPresent ? '1' : currentPage);
 
@@ -115,6 +130,7 @@ function Users() {
                             <Table.Th>Email</Table.Th>
                             <Table.Th>Role</Table.Th>
                             <Table.Th>Email Verified</Table.Th>
+                            <Table.Th>Account State</Table.Th>
                             <Table.Th>Action</Table.Th>
                         </Table.Tr>
                         <Table.Tr>
@@ -167,6 +183,36 @@ function Users() {
                                     <option value="">All</option>
                                     <option value="admin">Admin</option>
                                     <option value="user">User</option>
+                                </Input>
+                            </Table.Th>
+                            <Table.Th>
+                                <Input
+                                    id="verified"
+                                    name="verified"
+                                    component="select"
+                                    value={data.verified}
+                                    onChange={(e) =>
+                                        setData('verified', e.target.value)
+                                    }
+                                >
+                                    <option value="">All</option>
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </Input>
+                            </Table.Th>
+                            <Table.Th>
+                                <Input
+                                    id="active"
+                                    name="active"
+                                    component="select"
+                                    value={data.active}
+                                    onChange={(e) =>
+                                        setData('active', e.target.value)
+                                    }
+                                >
+                                    <option value="">All</option>
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
                                 </Input>
                             </Table.Th>
                         </Table.Tr>

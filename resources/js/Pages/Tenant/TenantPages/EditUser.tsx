@@ -126,10 +126,8 @@ function EditUser({ user }: { user: User }) {
                                     'error',
                                 ]}
                             >
-                                <optgroup label="Role">
-                                    <option value="Admin">Admin</option>
-                                    <option value="User">User</option>
-                                </optgroup>
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
                             </NativeSelect>
                         </div>
                     </div>

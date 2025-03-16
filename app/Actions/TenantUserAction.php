@@ -22,7 +22,7 @@ class TenantUserAction
     public function get_tenant_users($tenant, $request)
     {
         return $tenant->run(function () use ($request) {
-            $query = User::query()->with('profile')->orderBy('created_at', 'DESC');
+            $query = User::query()->with('profile')->orderBy('created_at', 'desc');
 
             if ($request->filled('first_name')) {
                 $query->whereHas('profile', function ($q) use ($request) {
@@ -41,7 +41,19 @@ class TenantUserAction
             }
 
             if ($request->filled('role')) {
-                $query->where('role', 'like', '%'.strtolower($request->role).'%');
+                $query->where('role', strtolower($request->role));
+            }
+
+            if ($request->filled('verified')) {
+                if ($request->verified == 'false') {
+                    $query->whereNull('email_verified_at');
+                } else {
+                    $query->whereNotNull('email_verified_at');
+                }
+            }
+
+            if ($request->filled('active')) {
+                $query->where('is_active', ! ($request->active == 'false'));
             }
 
             return $query->paginate(10)->withQueryString()->toArray();
