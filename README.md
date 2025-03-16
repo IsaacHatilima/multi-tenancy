@@ -1,76 +1,138 @@
-# React Inertia Laravel Tailwind (RILT) with Mantine UI Multi Tenancy Starter Project
+Here’s the updated README with PostgreSQL multi-schema support explicitly mentioned:
 
-[RILT Starter Template](https://github.com/IsaacHatilima/multi-tenancy)
+---
 
-## Project Status: Active Development
+# **React Inertia Laravel Tailwind (RILT) Multi-Tenancy Starter Kit**
 
-## About The Project
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repo-blue?logo=github)](https://github.com/IsaacHatilima/multi-tenancy)
 
-This project is a comprehensive starter template designed to simplify and accelerate the development of modern web
-applications. It integrates key technologies like React, Inertia.js, Laravel, and Tailwind CSS. Out of the box the app
-provides authentication and multi tenancy ready to go.
+## 🚀 Project Status: **Active Development**
 
-### Key Features:
+## 📌 About the Project
 
-- Clean, organized architecture with actions-based controllers for better maintainability.
-- Ready-to-go auth routes and views with **Inertia.js** and **React** for a seamless SPA experience.
-- **Tailwind CSS** for responsive, customizable UI design.
-- Pre-configured **Mantine UI** for polished, user-friendly interfaces.
-- Scalable architecture for adding new features and extending functionality.
-- Multi tenancy with multi database configuration.
+This starter kit streamlines the development of multi-tenant web applications using **Laravel, React, Inertia.js, and
+Tailwind CSS**. It provides **authentication and multi-tenancy out of the box**, leveraging the **Tenancy for Laravel**
+package with a **PostgreSQL multi-schema setup** for tenant database isolation.
 
-## Tech Stack:
+### ✨ **Key Features**
 
-- **[React](https://react.dev/)**: A powerful JavaScript library for building dynamic user interfaces with a
-  component-based architecture.
-- **[Inertia.js](https://inertiajs.com/)**: A framework-agnostic tool that allows you to build modern, single-page
-  apps (SPAs) using server-side
-  routing and controllers.
-- **[Laravel](https://laravel.com/)**: A robust PHP framework for building web applications with an elegant syntax.
-- **[Tailwind CSS](https://tailwindui.com/)**: A utility-first CSS framework for creating responsive and customizable
-  designs.
-- **[Mantine UI](https://mantine.dev/)**: A React component library for building beautiful user interfaces with a rich
-  set of pre-built
-  components.
-- **[Tenancy for Laravel](https://tenancyforlaravel.com/)**: A flexible multi-tenancy package for Laravel. Single &
-  multi-database tenancy.
+✅ **Multi-Tenancy (PostgreSQL Multi-Schema Setup)** – Each tenant has its own isolated database schema for enhanced
+security and scalability.  
+✅ **Authentication Included** – Pre-configured authentication system for tenants.  
+✅ **Actions-Based Architecture** – Business logic is encapsulated in action classes, ensuring clean and maintainable
+controllers.  
+✅ **Full-Stack SPA Experience** – Powered by **React & Inertia.js** for smooth, client-server interactions.  
+✅ **Modern UI** – Styled with **Tailwind CSS & Mantine UI** for fast and responsive UI development.  
+✅ **Scalable & Extensible** – Easily add new features without breaking core functionality.
 
-## Installation
+---
 
-To get started with the project, follow these steps:
+## 🛠 **Tech Stack**
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/IsaacHatilima/multi-tenancy.git
-   cd multi-tenancy
+| Technology                                                | Description                                                                |
+|-----------------------------------------------------------|----------------------------------------------------------------------------|
+| **[React](https://react.dev/)**                           | Component-based UI library for dynamic interfaces.                         |
+| **[Inertia.js](https://inertiajs.com/)**                  | Enables Laravel to serve SPAs without requiring an API.                    |
+| **[Laravel](https://laravel.com/)**                       | Robust PHP framework with elegant syntax.                                  |
+| **[Tailwind CSS](https://tailwindui.com/)**               | Utility-first CSS framework for responsive styling.                        |
+| **[Mantine UI](https://mantine.dev/)**                    | Pre-built React components for fast UI development.                        |
+| **[Tenancy for Laravel](https://tenancyforlaravel.com/)** | Multi-tenancy package for Laravel, supporting multi-database architecture. |
+| **[PostgreSQL](https://www.postgresql.org/)**             | Used for multi-schema tenant database separation.                          |
 
-2. Install dependencies
-    ```bash
-    composer install
-    npm install
+---
 
-3. Configure your ```.env``` file with the necessary credentials.
-4. Run migrations and seed the database:
-    ```bash
-   php artisan migrate --seed
-5. Start the development server:
+## 📥 **Installation Guide**
 
-    ```bash
-   php artisan serve
-   npm run dev
+Follow these steps to set up the project locally:
 
-Visit http://localhost:8000 to see the app in action.
+### 1️⃣ Clone the Repository
 
-## Architecture Decisions
+```bash
+git clone https://github.com/IsaacHatilima/multi-tenancy.git
+cd multi-tenancy
+```
 
-**Actions-based Controllers:** The project moves business logic into action classes to keep controllers focused on
-request handling. This leads to a cleaner, more maintainable structure.
+### 2️⃣ Install Dependencies
 
-**Inertia.js + React:** Combining Inertia.js with React allows for a seamless SPA experience with minimal client-side
-routing and more intuitive server-side controller integration.
+```bash
+composer install
+npm install
+```
 
-**Tailwind + Mantine UI:** Tailwind provides utility-first styling, while Mantine UI offers rich, pre-designed
-components that enhance the user experience out of the box. Together, they allow for rapid UI development.
+### 3️⃣ Configure Environment
 
-**Multi Database:** With multi databases, this provides an easy and safe way to not only separate tenant data but
-also making database backup much easier. 
+Copy `.env.example` to `.env` and update your database credentials:
+
+```bash
+cp .env.example .env
+```
+
+### 4️⃣ Run Migrations & Seed the Database
+
+```bash
+php artisan migrate --seed
+```
+
+### 5️⃣ Start the Development Server
+
+```bash
+php artisan serve
+npm run dev
+```
+
+Visit **[http://localhost:8000](http://localhost:8000)** to access the application.
+
+---
+
+## 🏗 **Architecture Decisions**
+
+### 📌 **Actions-Based Controllers**
+
+All business logic is encapsulated in **action classes**, ensuring clean, single-responsibility controllers.
+
+### 📌 **Inertia.js + React for a Full-Stack SPA**
+
+Combines Laravel's power with React's reactivity while keeping server-side routing and controller integration intuitive.
+
+### 📌 **Tailwind + Mantine UI for Rapid UI Development**
+
+- **Tailwind CSS**: Utility-first styling approach for easy customization.
+- **Mantine UI**: Pre-styled, accessible React components for seamless UI design.
+
+### 📌 **Multi-Tenancy with PostgreSQL Multi-Schema**
+
+This project uses **PostgreSQL's multi-schema** capability to isolate tenant data while maintaining a single database
+instance. The **Tenancy for Laravel** package:
+
+- Automatically switches to the correct tenant schema based on the domain (e.g., `ten1.app.com`).
+- Prevents unauthorized tenant access using middleware.
+- Simplifies data management and backups while maintaining strong isolation.
+
+---
+
+## 📌 **Next Steps & Future Enhancements**
+
+🔹 Improve documentation with screenshots and a demo link.  
+🔹 Add testing strategies to ensure tenant isolation works as expected.  
+🔹 Consider adding optional API support for tenant-based API access.
+
+---
+
+## 🛡 **License**
+
+This project is open-source and licensed under the [MIT License](LICENSE).
+
+---
+
+### 🚀 **Contributions & Support**
+
+Found a bug or have suggestions? Feel free to submit a PR or open an issue
+on [GitHub](https://github.com/IsaacHatilima/multi-tenancy).
+
+---
+
+### 🔗 **Follow My Work**
+
+📌 GitHub: [IsaacHatilima](https://github.com/IsaacHatilima)
+
+---
