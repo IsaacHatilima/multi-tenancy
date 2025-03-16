@@ -1,7 +1,7 @@
 import TablePagination from '@/Components/TablePagination';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import CreateUser from '@/Pages/Tenant/TenantPages/CreateUser';
-import EditUser from '@/Pages/Tenant/TenantPages/EditUser';
+import CreateUser from '@/Pages/Tenant/TenantPages/Partials/CreateUser';
+import EditUser from '@/Pages/Tenant/TenantPages/Partials/EditUser';
 import ToggleUserState from '@/Pages/Tenant/TenantPages/Partials/ToggleUserState';
 import { PaginatedUsers, TenantUserFilter, User } from '@/types/user';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
