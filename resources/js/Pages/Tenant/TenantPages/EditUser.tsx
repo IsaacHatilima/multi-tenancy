@@ -1,9 +1,10 @@
 import { User } from '@/types/user';
 import { useForm } from '@inertiajs/react';
-import { Button, Modal, TextInput } from '@mantine/core';
+import { Button, Modal, NativeSelect, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { FormEventHandler } from 'react';
+import { MdKeyboardArrowDown } from 'react-icons/md';
 
 function EditUser({ user }: { user: User }) {
     const [openCreateTenantModal, createTenantModalManager] =
@@ -12,6 +13,7 @@ function EditUser({ user }: { user: User }) {
         email: user.email,
         first_name: user.profile.first_name,
         last_name: user.profile.last_name,
+        role: user.role,
     });
 
     const handleSubmit: FormEventHandler = (e) => {
@@ -106,6 +108,29 @@ function EditUser({ user }: { user: User }) {
                                     'error',
                                 ]}
                             />
+                            <NativeSelect
+                                rightSection={<MdKeyboardArrowDown size={16} />}
+                                className="w-full"
+                                mt="md"
+                                label="Role"
+                                withAsterisk
+                                value={data.role}
+                                error={errors.role}
+                                onChange={(e) =>
+                                    setData('role', e.currentTarget.value)
+                                }
+                                inputWrapperOrder={[
+                                    'label',
+                                    'input',
+                                    'description',
+                                    'error',
+                                ]}
+                            >
+                                <optgroup label="Role">
+                                    <option value="Admin">Admin</option>
+                                    <option value="User">User</option>
+                                </optgroup>
+                            </NativeSelect>
                         </div>
                     </div>
 

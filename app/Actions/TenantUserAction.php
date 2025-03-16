@@ -100,6 +100,7 @@ class TenantUserAction
         $user->profile->date_of_birth = $request->date_of_birth;
 
         $user->email = strtolower($request->email);
+        $user->role = strtolower($request->role);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
