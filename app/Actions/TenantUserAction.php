@@ -54,8 +54,9 @@ class TenantUserAction
 
         $user = User::create([
             'tenant_id' => tenant()->id,
-            'email' => $request->email,
+            'email' => strtolower($request->email),
             'password' => $password,
+            'role' => strtolower($request->role),
         ]);
 
         $this->profileManager->create_profile($request, $user);

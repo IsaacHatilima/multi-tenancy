@@ -1,8 +1,9 @@
 import { useForm } from '@inertiajs/react';
-import { Button, Modal, TextInput } from '@mantine/core';
+import { Button, Modal, NativeSelect, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { FormEventHandler } from 'react';
+import { MdKeyboardArrowDown } from 'react-icons/md';
 
 function CreateUser() {
     const [openCreateTenantModal, createTenantModalManager] =
@@ -11,6 +12,7 @@ function CreateUser() {
         email: '',
         first_name: '',
         last_name: '',
+        role: '',
     });
 
     const handleSubmit: FormEventHandler = (e) => {
@@ -97,6 +99,29 @@ function CreateUser() {
                                 label="Email"
                                 onChange={(e) =>
                                     setData('email', e.target.value)
+                                }
+                                inputWrapperOrder={[
+                                    'label',
+                                    'input',
+                                    'description',
+                                    'error',
+                                ]}
+                            />
+                            <NativeSelect
+                                rightSection={<MdKeyboardArrowDown size={16} />}
+                                className="w-full"
+                                mt="md"
+                                label="Role"
+                                data={[
+                                    { label: 'Select Role', value: '' },
+                                    { label: 'Admin', value: 'admin' },
+                                    { label: 'User', value: 'user' },
+                                ]}
+                                withAsterisk
+                                value={data.role}
+                                error={errors.role}
+                                onChange={(e) =>
+                                    setData('role', e.currentTarget.value)
                                 }
                                 inputWrapperOrder={[
                                     'label',
