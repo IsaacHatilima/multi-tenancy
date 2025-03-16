@@ -38,7 +38,13 @@ class TenantFactory extends Factory
             ]);
 
             $tenant->run(function ($tenant) {
-                User::factory()->create(['tenant_id' => $tenant->id]);
+                for ($i = 1; $i <= 5; $i++) {
+
+                    User::factory()->create([
+                        'tenant_id' => $tenant->id,
+                        'role' => $this->faker->randomElement(['admin', 'user']),
+                    ]);
+                }
             });
 
             Domain::factory()->create(['tenant_id' => $tenant->id]);
