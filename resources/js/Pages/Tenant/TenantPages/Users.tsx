@@ -5,9 +5,11 @@ import EditUser from '@/Pages/Tenant/TenantPages/EditUser';
 import ToggleUserState from '@/Pages/Tenant/TenantPages/Partials/ToggleUserState';
 import { PaginatedUsers, TenantUserFilter, User } from '@/types/user';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { Badge, Card, Table, TextInput } from '@mantine/core';
+import { Badge, Card, Input, Table, TextInput } from '@mantine/core';
 import { debounce } from 'lodash';
 import { useEffect } from 'react';
+import { FaUserTie } from 'react-icons/fa';
+import { FaUserLarge } from 'react-icons/fa6';
 
 function Users() {
     const tenantUsers = usePage().props.users as PaginatedUsers;
@@ -17,6 +19,7 @@ function Users() {
         first_name: filters?.first_name || '',
         last_name: filters?.last_name || '',
         email: filters?.email || '',
+        role: filters?.role || '',
     });
 
     const rows = tenantUsers?.data.map((user: User) => (
@@ -26,6 +29,18 @@ function Users() {
             <Table.Td>{user.email}</Table.Td>
             <Table.Td>
                 <Badge
+                    color={user.role == 'Admin' ? 'green' : 'cyan'}
+                    variant="outline"
+                    size="sm"
+                >
+                    <div className="flex items-center gap-2 p-1">
+                        {user.role == 'Admin' ? <FaUserTie /> : <FaUserLarge />}
+                        {user.role}
+                    </div>
+                </Badge>
+            </Table.Td>
+            <Table.Td>
+                <Badge
                     color={user.email_verified_at != null ? 'green' : 'red'}
                     variant="outline"
                     size="sm"
@@ -33,7 +48,7 @@ function Users() {
                     {user.email_verified_at != null ? 'Verified' : 'Unverified'}
                 </Badge>
             </Table.Td>
-            <Table.Td className="flex justify-between">
+            <Table.Td className="flex gap-4">
                 <EditUser user={user} />
                 <ToggleUserState user={user} />
             </Table.Td>
@@ -57,6 +72,7 @@ function Users() {
         setOrDeleteParam('first_name', data.first_name);
         setOrDeleteParam('last_name', data.last_name);
         setOrDeleteParam('email', data.email);
+        setOrDeleteParam('role', data.role);
 
         urlParams.set('page', filtersPresent ? '1' : currentPage);
 
@@ -97,6 +113,7 @@ function Users() {
                             <Table.Th>First Name</Table.Th>
                             <Table.Th>Last Name</Table.Th>
                             <Table.Th>Email</Table.Th>
+                            <Table.Th>Role</Table.Th>
                             <Table.Th>Email Verified</Table.Th>
                             <Table.Th>Action</Table.Th>
                         </Table.Tr>
@@ -136,6 +153,21 @@ function Users() {
                                         setData('email', e.target.value)
                                     }
                                 />
+                            </Table.Th>
+                            <Table.Th>
+                                <Input
+                                    id="role"
+                                    name="role"
+                                    component="select"
+                                    value={data.role}
+                                    onChange={(e) =>
+                                        setData('role', e.target.value)
+                                    }
+                                >
+                                    <option value="">All</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="user">User</option>
+                                </Input>
                             </Table.Th>
                         </Table.Tr>
                     </Table.Thead>

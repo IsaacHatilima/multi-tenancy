@@ -41,6 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'two_factor_code',
         'two_factor_expires_at',
         'copied_codes',
+        'role',
     ];
 
     /**
@@ -52,6 +53,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+    public function getRoleAttribute($value): string
+    {
+        return ucwords($value);
+    }
 
     public function profile(): HasOne
     {

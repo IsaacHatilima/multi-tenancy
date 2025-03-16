@@ -40,6 +40,10 @@ class TenantUserAction
                 $query->where('email', 'like', '%'.strtolower($request->email).'%');
             }
 
+            if ($request->filled('role')) {
+                $query->where('role', 'like', '%'.strtolower($request->role).'%');
+            }
+
             return $query->paginate(10)->withQueryString()->toArray();
         });
     }

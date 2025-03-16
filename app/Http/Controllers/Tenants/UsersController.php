@@ -37,7 +37,7 @@ class UsersController extends Controller
 
         return Inertia::render('Tenant/TenantPages/Users', [
             'users' => $this->tenantUserAction->get_tenant_users(tenant(), $request),
-            'filters' => $request->only(['first_name', 'last_name', 'email']),
+            'filters' => $request->only(['first_name', 'last_name', 'email', 'role']),
         ]);
     }
 
