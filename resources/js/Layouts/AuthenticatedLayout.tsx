@@ -25,8 +25,8 @@ export default function Authenticated({
             }}
             padding="md"
         >
-            <AppShell.Header withBorder={false} className="shadow-md">
-                <div className="flex h-full w-full items-center justify-between">
+            <AppShell.Header withBorder={false}>
+                <div className="flex h-full w-full items-center justify-between shadow-md">
                     <div className="ml-4">
                         <Burger
                             opened={opened}
@@ -39,8 +39,8 @@ export default function Authenticated({
                     <TopNav user={user} />
                 </div>
             </AppShell.Header>
-            <AppShell.Navbar p="md" withBorder={false} className="shadow-xl">
-                {!tenant ? <CentralSideNav /> : <TenantSideNav />}
+            <AppShell.Navbar p="md" withBorder={false} className="shadow-md">
+                {!tenant ? <CentralSideNav /> : <TenantSideNav user={user} />}
             </AppShell.Navbar>
             <AppShell.Main>{children}</AppShell.Main>
         </AppShell>

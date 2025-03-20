@@ -1,26 +1,26 @@
-import { User } from '@/types/user';
 import { useForm } from '@inertiajs/react';
-import { Button, Modal, TextInput } from '@mantine/core';
+import { Button, Modal, Select, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { FormEventHandler } from 'react';
 
-function EditUser({ user }: { user: User }) {
+function CreateUser() {
     const [openCreateTenantModal, createTenantModalManager] =
         useDisclosure(false);
-    const { data, setData, errors, put, reset } = useForm({
-        email: user.email,
-        first_name: user.profile.first_name,
-        last_name: user.profile.last_name,
+    const { data, setData, errors, post, reset } = useForm({
+        email: '',
+        first_name: '',
+        last_name: '',
+        role: '',
     });
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(route('users.update', user.id), {
+        post(route('users.store'), {
             onSuccess: () => {
                 notifications.show({
                     title: 'Success',
-                    message: 'User has been updated successfully!',
+                    message: 'User has been created successfully!',
                     color: 'green',
                 });
                 createTenantModalManager.close();
@@ -106,6 +106,27 @@ function EditUser({ user }: { user: User }) {
                                     'error',
                                 ]}
                             />
+                            <Select
+                                mt="md"
+                                label="Role"
+                                error={errors.role}
+                                value={data.role}
+                                withAsterisk
+                                data={[
+                                    { label: 'Select Role', value: '' },
+                                    { label: 'Admin', value: 'admin' },
+                                    { label: 'User', value: 'user' },
+                                ]}
+                                onChange={(_value, option) => {
+                                    setData('role', option.value);
+                                }}
+                                inputWrapperOrder={[
+                                    'label',
+                                    'input',
+                                    'description',
+                                    'error',
+                                ]}
+                            />
                         </div>
                     </div>
 
@@ -125,22 +146,23 @@ function EditUser({ user }: { user: User }) {
                             color="black"
                             loaderProps={{ type: 'dots' }}
                         >
-                            Update
+                            Create
                         </Button>
                     </div>
                 </form>
             </Modal>
 
-            <span
-                className="cursor-pointer text-sky-600 hover:underline"
+            <Button
+                variant="filled"
+                color="black"
                 onClick={() => {
                     createTenantModalManager.open();
                 }}
             >
-                Edit User
-            </span>
+                Create User
+            </Button>
         </>
     );
 }
 
-export default EditUser;
+export default CreateUser;

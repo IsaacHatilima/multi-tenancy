@@ -27,6 +27,7 @@ class CreateTenantUsersRequest extends FormRequest
         return array_merge(
             StringRule::rules('first_name', true),
             StringRule::rules('last_name', true),
+            StringRule::rules('role', true),
             NewEmailRule::rules(),
         );
     }
@@ -36,6 +37,7 @@ class CreateTenantUsersRequest extends FormRequest
         return array_merge(
             StringRule::messages('first_name', true),
             StringRule::messages('last_name', true),
+            StringRule::messages('role', true),
             NewEmailRule::messages(),
         );
     }

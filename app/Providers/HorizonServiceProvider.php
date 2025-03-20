@@ -24,6 +24,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      * Register the Horizon gate.
      *
      * This gate determines who can access Horizon in non-local environments.
+     * This is a user from central database since tenants have no reason to see this data.
      */
     protected function gate(): void
     {

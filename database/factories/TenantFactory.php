@@ -16,15 +16,15 @@ class TenantFactory extends Factory
     {
         return [
             'name' => strtoupper($this->faker->unique()->words(rand(1, 3), true)),
-            'address' => $this->faker->streetName.' '.$this->faker->numberBetween(1, 999).strtoupper($this->faker->optional(0.5)->randomLetter),
-            'city' => $this->faker->city,
-            'state' => $this->faker->state,
-            'zip' => $this->faker->postcode,
-            'country' => $this->faker->country,
-            'contact_email' => $this->faker->unique()->email,
+            'address' => $this->faker->streetName().' '.$this->faker->numberBetween(1, 999).strtoupper($this->faker->optional(0.5)->randomLetter()),
+            'city' => $this->faker->city(),
+            'state' => $this->faker->state(),
+            'zip' => $this->faker->postcode(),
+            'country' => $this->faker->country(),
+            'contact_email' => $this->faker->unique()->email(),
             'contact_phone' => '+49'.$this->faker->unique()->numerify('###########'),
-            'contact_first_name' => $this->faker->firstName,
-            'contact_last_name' => $this->faker->lastName,
+            'contact_first_name' => $this->faker->firstName(),
+            'contact_last_name' => $this->faker->lastName(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
@@ -38,7 +38,13 @@ class TenantFactory extends Factory
             ]);
 
             $tenant->run(function ($tenant) {
-                User::factory()->create(['tenant_id' => $tenant->id]);
+                for ($i = 1; $i <= 5; $i++) {
+
+                    User::factory()->create([
+                        'tenant_id' => $tenant->id,
+                        'role' => $this->faker->randomElement(['admin', 'user']),
+                    ]);
+                }
             });
 
             Domain::factory()->create(['tenant_id' => $tenant->id]);

@@ -22,7 +22,7 @@ class TenantUserAction
     public function get_tenant_users($tenant, $request)
     {
         return $tenant->run(function () use ($request) {
-            $query = User::query()->with('profile')->orderBy('created_at', 'DESC');
+            $query = User::query()->with('profile')->orderBy('created_at', 'desc');
 
             if ($request->filled('first_name')) {
                 $query->whereHas('profile', function ($q) use ($request) {
@@ -40,6 +40,22 @@ class TenantUserAction
                 $query->where('email', 'like', '%'.strtolower($request->email).'%');
             }
 
+            if ($request->filled('role')) {
+                $query->where('role', strtolower($request->role));
+            }
+
+            if ($request->filled('verified')) {
+                if ($request->verified == 'false') {
+                    $query->whereNull('email_verified_at');
+                } else {
+                    $query->whereNotNull('email_verified_at');
+                }
+            }
+
+            if ($request->filled('active')) {
+                $query->where('is_active', ! ($request->active == 'false'));
+            }
+
             return $query->paginate(10)->withQueryString()->toArray();
         });
     }
@@ -50,8 +66,9 @@ class TenantUserAction
 
         $user = User::create([
             'tenant_id' => tenant()->id,
-            'email' => $request->email,
+            'email' => strtolower($request->email),
             'password' => $password,
+            'role' => strtolower($request->role),
         ]);
 
         $this->profileManager->create_profile($request, $user);
@@ -95,6 +112,7 @@ class TenantUserAction
         $user->profile->date_of_birth = $request->date_of_birth;
 
         $user->email = strtolower($request->email);
+        $user->role = strtolower($request->role);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;

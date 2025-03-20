@@ -1,9 +1,14 @@
 import SideNavOptions from '@/Components/SideNavOptions';
 import { MenuItem } from '@/types/menu';
+import { User } from '@/types/user';
 import { Box } from '@mantine/core';
-import { MdSpaceDashboard, MdSupervisorAccount } from 'react-icons/md';
+import {
+    MdOutlineTaskAlt,
+    MdSpaceDashboard,
+    MdSupervisorAccount,
+} from 'react-icons/md';
 
-function TenantSideNav() {
+function TenantSideNav({ user }: { user: User }) {
     const menuItems: MenuItem[] = [
         {
             icon: MdSpaceDashboard,
@@ -11,10 +16,20 @@ function TenantSideNav() {
             href: route('dashboard'),
             children: [],
         },
+        ...(user.role == 'Admin'
+            ? [
+                  {
+                      icon: MdSupervisorAccount,
+                      label: 'Users',
+                      href: route('users'),
+                      children: [],
+                  },
+              ]
+            : []),
         {
-            icon: MdSupervisorAccount,
-            label: 'Users',
-            href: route('users'),
+            icon: MdOutlineTaskAlt,
+            label: 'Tasks',
+            href: route('tasks.index'),
             children: [],
         },
     ];

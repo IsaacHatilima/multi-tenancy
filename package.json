@@ -50,9 +50,9 @@
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
-        "@mantine/core": "^7.15.2",
+        "@mantine/core": "^7.17.2",
         "@mantine/dates": "^7.15.2",
-        "@mantine/hooks": "^7.15.2",
+        "@mantine/hooks": "^7.17.2",
         "@mantine/notifications": "^7.16.1",
         "dayjs": "^1.11.13",
         "dayjs-plugin-utc": "^0.1.2",

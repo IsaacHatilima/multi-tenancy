@@ -29,7 +29,7 @@ function ToggleUserState({ user }: { user: User }) {
             onSuccess: () => {
                 notifications.show({
                     title: 'Success',
-                    message: 'Your status updated successfully!',
+                    message: 'Account updated successfully!',
                     color: 'green',
                 });
                 createTenantModalManager.close();
@@ -48,7 +48,7 @@ function ToggleUserState({ user }: { user: User }) {
             onSuccess: () => {
                 notifications.show({
                     title: 'Success',
-                    message: 'Your account deleted successfully!',
+                    message: 'Account deleted successfully!',
                     color: 'green',
                 });
                 createTenantModalManager.close();
@@ -161,12 +161,12 @@ function ToggleUserState({ user }: { user: User }) {
             </Modal>
 
             <span
-                className="cursor-pointer text-red-600 hover:underline"
+                className={`cursor-pointer ${user.is_active ? 'text-red-600' : 'text-green-600'} hover:underline`}
                 onClick={() => {
                     createTenantModalManager.open();
                 }}
             >
-                Delete User
+                {user.is_active ? 'Delete User' : 'Activate'}
             </span>
         </>
     );

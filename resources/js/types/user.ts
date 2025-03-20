@@ -20,6 +20,9 @@ export interface TenantUserFilter {
     first_name: string | null;
     last_name: string | null;
     email: string | null;
+    role: string | null;
+    verified: string | null;
+    active: string | null;
 }
 
 export interface Profile {

@@ -14,7 +14,7 @@ import {
 } from 'react-icons/md';
 
 function TenantDetails() {
-    const tenant: Tenant = usePage().props.tenant;
+    const tenant_data: Tenant = usePage().props.tenant_data as Tenant;
     const defaultTab = 'details';
     const queryParams = new URLSearchParams(window.location.search);
     const initialTab = queryParams.get('tab') || defaultTab;
@@ -98,28 +98,30 @@ function TenantDetails() {
                         <div>
                             <Title order={3}>Tenant Details</Title>
                             <div className="mt-2 flex items-center gap-2">
-                                <Text c="dimmed">{tenant.tenant_number}</Text>
+                                <Text c="dimmed">
+                                    {tenant_data.tenant_number}
+                                </Text>
                                 <Badge
                                     color={
-                                        tenant.status == 'active'
+                                        tenant_data.status == 'active'
                                             ? 'green'
                                             : 'red'
                                     }
                                     variant="outline"
                                     size="sm"
                                 >
-                                    {tenant.status}
+                                    {tenant_data.status}
                                 </Badge>
                             </div>
 
-                            <TenantData tenant={tenant} />
+                            <TenantData tenant={tenant_data} />
                         </div>
 
                         <Divider my="md" />
 
                         <div>
                             <Title order={3}>Domain Details</Title>
-                            <UpdateSubdomain tenant={tenant} />
+                            <UpdateSubdomain tenant={tenant_data} />
                         </div>
                     </Tabs.Panel>
 
