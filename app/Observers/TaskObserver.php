@@ -35,15 +35,15 @@ class TaskObserver
         $changes = [];
 
         if ($task->isDirty('priority')) {
-            $changes[] = $this->getUserFullName().' changed priority to '.ucwords($task->priority);
+            $changes[] = $this->getUserFullName().' changed priority to '.ucwords($task->priority->value);
         }
 
         if ($task->isDirty('status')) {
-            $changes[] = $this->getUserFullName().' changed status to '.ucwords($task->status);
+            $changes[] = $this->getUserFullName().' changed status to '.ucwords(str_replace('_', ' ', $task->status->value));
         }
 
         if ($task->isDirty('escalation')) {
-            $changes[] = $this->getUserFullName().' changed escalation to '.ucwords($task->escalation);
+            $changes[] = $this->getUserFullName().' changed escalation to '.ucwords($task->escalation->value);
         }
 
         if (! empty($changes)) {

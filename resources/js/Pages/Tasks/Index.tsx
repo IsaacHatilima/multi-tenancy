@@ -1,7 +1,7 @@
 import Layout from '@/Layouts/AuthenticatedLayout';
-import CreateTask from '@/Pages/CreateTask';
+import CreateTask from '@/Pages/Tasks/Partials/CreateTask';
 import { PaginatedTasks, Task } from '@/types/task';
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Badge, Card, Group, Pagination, Table } from '@mantine/core';
 
 export default function Index() {
@@ -9,7 +9,11 @@ export default function Index() {
 
     const rows = tasks?.data.map((task: Task) => (
         <Table.Tr key={task.id}>
-            <Table.Td>{task.title}</Table.Td>
+            <Table.Td>
+                <Link href={route('tasks.show', task.id)}>
+                    <span className="text-sky-600">{task.title}</span>
+                </Link>
+            </Table.Td>
             <Table.Td>
                 {task.description.length > 60
                     ? task.description.substring(0, 60) + '...'

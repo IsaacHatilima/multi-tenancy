@@ -19,7 +19,7 @@ export default function CreateTask() {
         title: '',
         description: '',
         start: dayjs(new Date()).format('YYYY-MM-DD'),
-        end: dayjs(new Date()).format('YYYY-MM-DD'), // Initially null
+        end: dayjs(new Date()).format('YYYY-MM-DD'),
     });
 
     const handleSubmit: FormEventHandler = (e) => {

@@ -15,14 +15,20 @@ class TaskPolicy
         return $user->tenant_id == tenant()->id;
     }
 
-    public function view(User $user, Task $task): bool {}
+    public function view(User $user, Task $task): bool
+    {
+        return $user->tenant_id == tenant()->id;
+    }
 
     public function create(User $user): bool
     {
         return $user->tenant_id == tenant()->id && $user->role == 'Admin';
     }
 
-    public function update(User $user, Task $task): bool {}
+    public function update(User $user, Task $task): bool
+    {
+        return $user->tenant_id == tenant()->id;
+    }
 
     public function delete(User $user, Task $task): bool {}
 

@@ -31,3 +31,12 @@ export interface PaginatedTasks {
     to: number;
     total: number;
 }
+
+export interface TaskLog {
+    id: string;
+    user_id: User;
+    task_id: Task[];
+    action: string;
+    action_performed: string;
+    created_at: string;
+}

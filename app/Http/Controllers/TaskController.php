@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\TaskAction;
 use App\Http\Requests\TaskRequest;
 use App\Models\Task;
+use App\Models\TaskLog;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -49,7 +50,13 @@ class TaskController extends Controller
     {
         $this->authorize('view', $task);
 
-        return $task;
+        return Inertia::render('Tasks/Partials/TaskDetails', [
+            'task' => $task->load('assignedTo.profile'),
+            'taskLogs' => TaskLog::where('task_id', $task->id)->get(),
+            'users' => User::with(['profile:id,user_id,first_name,last_name'])
+                ->select('id')
+                ->get(),
+        ]);
     }
 
     public function update(TaskRequest $request, Task $task)
@@ -58,7 +65,7 @@ class TaskController extends Controller
 
         $task->update($request->validated());
 
-        return $task;
+        return redirect()->back();
     }
 
     public function destroy(Task $task)
