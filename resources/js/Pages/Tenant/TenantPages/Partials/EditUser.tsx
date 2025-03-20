@@ -114,8 +114,8 @@ function EditUser({ user }: { user: User }) {
                                 value={data.role}
                                 withAsterisk
                                 data={[
-                                    { label: 'Admin', value: 'Admin' },
-                                    { label: 'User', value: 'User' },
+                                    { label: 'Admin', value: 'admin' },
+                                    { label: 'User', value: 'user' },
                                 ]}
                                 onChange={(_value, option) => {
                                     setData('role', option.value);

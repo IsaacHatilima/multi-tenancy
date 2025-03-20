@@ -54,11 +54,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    public function getRoleAttribute($value): string
-    {
-        return ucwords($value);
-    }
-
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);

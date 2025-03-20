@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Actions\TaskAction;
 use App\Http\Requests\TaskRequest;
 use App\Models\Task;
+use App\Models\TaskLog;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TaskController extends Controller
@@ -20,15 +22,18 @@ class TaskController extends Controller
         $this->taskAction = $taskAction;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Task::class);
 
         return Inertia::render('Tasks/Index', [
-            'tasks' => Task::with('assignedTo.profile')->paginate(10),
+            'tasks' => $this->taskAction->get_tasks($request),
             'users' => User::with(['profile:id,user_id,first_name,last_name'])
                 ->select('id')
                 ->get(),
+            'filters' => [
+                'sorting' => $request->sorting,
+            ],
         ]);
     }
 
@@ -41,28 +46,46 @@ class TaskController extends Controller
         return redirect()->back();
     }
 
-    public function show(Task $task)
+    public function show($taskId)
     {
+        $task = Task::withTrashed()->with('assignedTo.profile')->findOrFail($taskId);
         $this->authorize('view', $task);
 
-        return $task;
+        return Inertia::render('Tasks/Partials/TaskDetails', [
+            'task' => $task->load('assignedTo.profile'),
+            'taskLogs' => TaskLog::where('task_id', $task->id)->get(),
+            'users' => User::with(['profile:id,user_id,first_name,last_name'])
+                ->select('id')
+                ->get(),
+        ]);
     }
 
     public function update(TaskRequest $request, Task $task)
     {
         $this->authorize('update', $task);
 
-        $task->update($request->validated());
+        $this->taskAction->update($task, $request);
 
-        return $task;
+        return redirect()->back();
     }
 
     public function destroy(Task $task)
     {
         $this->authorize('delete', $task);
 
-        $task->delete();
+        $this->taskAction->delete($task);
 
-        return response()->json();
+        return redirect()->route('tasks.index');
+    }
+
+    public function restore($taskId)
+    {
+        $task = Task::withTrashed()->findOrFail($taskId);
+
+        $this->authorize('restore', $task);
+
+        $this->taskAction->restore($task);
+
+        return redirect()->back();
     }
 }

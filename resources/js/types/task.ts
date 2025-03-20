@@ -14,6 +14,7 @@ export interface Task {
     end: string;
     created_at: string;
     updated_at: string;
+    deleted_at: string;
 }
 
 export interface PaginatedTasks {
@@ -30,4 +31,13 @@ export interface PaginatedTasks {
     prev_page_url: string | URL;
     to: number;
     total: number;
+}
+
+export interface TaskLog {
+    id: string;
+    user_id: User;
+    task_id: Task[];
+    action: string;
+    action_performed: string;
+    created_at: string;
 }

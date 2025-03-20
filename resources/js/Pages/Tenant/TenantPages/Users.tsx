@@ -31,12 +31,12 @@ function Users() {
             <Table.Td>{user.email}</Table.Td>
             <Table.Td>
                 <Badge
-                    color={user.role == 'Admin' ? 'green' : 'cyan'}
+                    color={user.role == 'admin' ? 'green' : 'cyan'}
                     variant="outline"
                     size="sm"
                 >
                     <div className="flex items-center gap-2 p-1">
-                        {user.role == 'Admin' ? <FaUserTie /> : <FaUserLarge />}
+                        {user.role == 'admin' ? <FaUserTie /> : <FaUserLarge />}
                         {user.role}
                     </div>
                 </Badge>
