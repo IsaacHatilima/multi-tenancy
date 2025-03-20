@@ -1,6 +1,6 @@
 import { Task } from '@/types/task';
 import { User } from '@/types/user';
-import { useForm, usePage } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import { Button, Card, Select, Textarea, TextInput } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
@@ -39,6 +39,46 @@ function UpdateTask({ task }: { task: Task }) {
             },
             onError: () => {},
         });
+    };
+
+    const handleDelete: FormEventHandler = (e) => {
+        e.preventDefault();
+        open();
+        router.delete(route('tasks.destroy', task.id), {
+            onSuccess: () => {
+                notifications.show({
+                    title: 'Success',
+                    message: 'Task has been deleted successfully!',
+                    color: 'green',
+                });
+            },
+            onFinish: () => {
+                close();
+            },
+            onError: () => {},
+        });
+    };
+
+    const handleRestore: FormEventHandler = (e) => {
+        e.preventDefault();
+        open();
+        router.put(
+            route('tasks.restore', task.id),
+            {},
+            {
+                onSuccess: () => {
+                    notifications.show({
+                        title: 'Success',
+                        message: 'Task has been restored successfully!',
+                        color: 'green',
+                    });
+                },
+                onFinish: () => {
+                    close();
+                },
+                onError: () => {},
+            },
+        );
     };
 
     return (
@@ -227,6 +267,30 @@ function UpdateTask({ task }: { task: Task }) {
                 </div>
 
                 <div className="mt-4 flex justify-end gap-2">
+                    {task.deleted_at != null ? (
+                        <Button
+                            type="button"
+                            variant="filled"
+                            color="green"
+                            onClick={handleRestore}
+                            loading={loading}
+                            loaderProps={{ type: 'dots' }}
+                        >
+                            Restore
+                        </Button>
+                    ) : (
+                        <Button
+                            type="button"
+                            variant="filled"
+                            color="red"
+                            onClick={handleDelete}
+                            loading={loading}
+                            loaderProps={{ type: 'dots' }}
+                        >
+                            Delete
+                        </Button>
+                    )}
+
                     <Button
                         type="submit"
                         variant="filled"

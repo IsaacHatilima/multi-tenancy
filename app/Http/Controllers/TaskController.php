@@ -46,8 +46,9 @@ class TaskController extends Controller
         return redirect()->back();
     }
 
-    public function show(Task $task)
+    public function show($taskId)
     {
+        $task = Task::withTrashed()->with('assignedTo.profile')->findOrFail($taskId);
         $this->authorize('view', $task);
 
         return Inertia::render('Tasks/Partials/TaskDetails', [
@@ -63,7 +64,7 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
 
-        $task->update($request->validated());
+        $this->taskAction->update($task, $request);
 
         return redirect()->back();
     }
@@ -72,8 +73,19 @@ class TaskController extends Controller
     {
         $this->authorize('delete', $task);
 
-        $task->delete();
+        $this->taskAction->delete($task);
 
-        return response()->json();
+        return redirect()->route('tasks.index');
+    }
+
+    public function restore($taskId)
+    {
+        $task = Task::withTrashed()->findOrFail($taskId);
+
+        $this->authorize('restore', $task);
+
+        $this->taskAction->restore($task);
+
+        return redirect()->back();
     }
 }

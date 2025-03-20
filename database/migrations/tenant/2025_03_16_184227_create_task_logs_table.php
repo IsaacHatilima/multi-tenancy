@@ -12,7 +12,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('task_id')->constrained('tasks');
             $table->foreignUuid('user_id')->constrained('users');
-            $table->enum('action', ['created', 'updated', 'deleted'])->default('created');
+            $table->enum('action', ['created', 'updated', 'deleted', 'restored'])->default('created');
             $table->longText('action_performed');
             $table->timestamps();
         });

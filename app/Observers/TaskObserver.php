@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Task;
 use App\Models\TaskLog;
+use App\Models\User;
 
 class TaskObserver
 {
@@ -33,17 +34,22 @@ class TaskObserver
     public function updated(Task $task): void
     {
         $changes = [];
+        $userName = $this->getUserFullName();
 
         if ($task->isDirty('priority')) {
-            $changes[] = $this->getUserFullName().' changed priority to '.ucwords($task->priority->value);
+            $changes[] = 'changed priority to '.ucwords($task->priority->value);
         }
 
         if ($task->isDirty('status')) {
-            $changes[] = $this->getUserFullName().' changed status to '.ucwords(str_replace('_', ' ', $task->status->value));
+            $changes[] = 'changed status to '.ucwords(str_replace('_', ' ', $task->status->value));
         }
 
         if ($task->isDirty('escalation')) {
-            $changes[] = $this->getUserFullName().' changed escalation to '.ucwords($task->escalation->value);
+            $changes[] = 'changed escalation to '.ucwords($task->escalation->value);
+        }
+
+        if ($task->isDirty('assigned_to')) {
+            $changes[] = 'reassigned task to '.$this->assignedUser($task->assigned_to);
         }
 
         if (! empty($changes)) {
@@ -51,9 +57,16 @@ class TaskObserver
                 'task_id' => $task->id,
                 'user_id' => auth()->id(),
                 'action' => 'updated',
-                'action_performed' => implode(', ', $changes),
+                'action_performed' => $userName.' '.implode(', ', $changes),
             ]);
         }
+    }
+
+    private function assignedUser($userId): string
+    {
+        $user = User::with('profile')->firstWhere('id', $userId);
+
+        return "{$user->profile->first_name} {$user->profile->last_name}";
     }
 
     /**
@@ -77,7 +90,7 @@ class TaskObserver
         TaskLog::create([
             'task_id' => $task->id,
             'user_id' => auth()->id(),
-            'action' => 'deleted',
+            'action' => $task->deleted_at ? 'deleted' : 'restored',
             'action_performed' => $this->getUserFullName().' restored the task',
         ]);
     }

@@ -8,10 +8,18 @@ export default function Index() {
     const tasks: PaginatedTasks = usePage().props.tasks as PaginatedTasks;
 
     const rows = tasks?.data.map((task: Task) => (
-        <Table.Tr key={task.id}>
+        <Table.Tr key={task.id} className={task.deleted_at ? 'bg-red-50' : ''}>
             <Table.Td>
                 <Link href={route('tasks.show', task.id)}>
                     <span className="text-sky-600">{task.title}</span>
+                    {task.deleted_at ? '  ' : ''}
+                    <span className="text-red-500">
+                        {task.deleted_at && (
+                            <Badge color="red" variant="filled" size="xs">
+                                Deleted
+                            </Badge>
+                        )}
+                    </span>
                 </Link>
             </Table.Td>
             <Table.Td>

@@ -16,7 +16,7 @@ function TenantSideNav({ user }: { user: User }) {
             href: route('dashboard'),
             children: [],
         },
-        ...(user.role == 'Admin'
+        ...(user.role == 'admin'
             ? [
                   {
                       icon: MdSupervisorAccount,
