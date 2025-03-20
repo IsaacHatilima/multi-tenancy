@@ -9,6 +9,13 @@ class TaskAction
 {
     public function __construct() {}
 
+    public function get_tasks($request)
+    {
+        $query = Task::query()->with(['assignedTo.profile'])->orderBy('created_at', $request->sorting ?: 'desc');
+
+        return $query->paginate(10)->withQueryString();
+    }
+
     public function create($request): void
     {
         Task::create([

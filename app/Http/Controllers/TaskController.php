@@ -7,6 +7,7 @@ use App\Http\Requests\TaskRequest;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TaskController extends Controller
@@ -20,15 +21,18 @@ class TaskController extends Controller
         $this->taskAction = $taskAction;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Task::class);
 
         return Inertia::render('Tasks/Index', [
-            'tasks' => Task::with('assignedTo.profile')->paginate(10),
+            'tasks' => $this->taskAction->get_tasks($request),
             'users' => User::with(['profile:id,user_id,first_name,last_name'])
                 ->select('id')
                 ->get(),
+            'filters' => [
+                'sorting' => $request->sorting,
+            ],
         ]);
     }
 
