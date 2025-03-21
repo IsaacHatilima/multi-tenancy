@@ -45,7 +45,7 @@ test('tenant user can be deleted with valid password', function ($data) {
             ->has('users')
         );
 
-    $createdUser = User::where('email', $data['email'])->first();
+    $createdUser = User::where('email', 'tenant@mail.com')->first();
 
     $this
         ->followingRedirects()
@@ -102,7 +102,7 @@ test('tenant user cannot be deleted with invalid password', function ($data) {
             ->has('users')
         );
 
-    $createdUser = User::where('email', $data['email'])->first();
+    $createdUser = User::where('email', 'tenant@mail.com')->first();
 
     $this
         ->followingRedirects()

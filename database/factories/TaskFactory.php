@@ -14,12 +14,13 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'priority' => fake()->word(),
-            'escalation' => fake()->word(),
-            'title' => fake()->word(),
+            'priority' => $this->faker->randomElement(['low', 'medium', 'high']),
+            'escalation' => $this->faker->randomElement(['level1', 'level2', 'level3']),
+            'status' => $this->faker->randomElement(['pending', 'in_progress', 'complete', 'cancelled']),
+            'title' => $this->faker->word(),
             'description' => fake()->text(),
-            'start' => Carbon::now(),
-            'end' => Carbon::now(),
+            'start' => date('Y-m-d'),
+            'end' => date('Y-m-d'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

@@ -6,7 +6,7 @@ Here’s the updated README with PostgreSQL multi-schema support explicitly ment
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repo-blue?logo=github)](https://github.com/IsaacHatilima/multi-tenancy)
 
-## 🚀 Project Status: **Active Development**
+## 🚀 Project Status: **Active Maintenance**
 
 ## 📌 About the Project
 
