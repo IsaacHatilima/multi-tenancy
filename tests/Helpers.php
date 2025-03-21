@@ -32,6 +32,7 @@ function createTenant($centralUser, $userType)
                 'tenant_id' => $tenant->id,
                 'email' => 'tenant@mail.com',
                 'password' => Hash::make('Password1#'),
+                'role' => 'admin',
             ])->profile()->create([
                 'first_name' => 'james',
                 'last_name' => 'peters',
