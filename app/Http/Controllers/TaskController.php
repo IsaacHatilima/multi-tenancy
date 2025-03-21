@@ -24,7 +24,7 @@ class TaskController extends Controller
 
     public function index(Request $request)
     {
-        $this->authorize('viewAny', Task::class);
+        $this->authorize('viewAny', [User::class, tenant()]);
 
         return Inertia::render('Tasks/Index', [
             'tasks' => $this->taskAction->get_tasks($request),
@@ -39,7 +39,7 @@ class TaskController extends Controller
 
     public function store(TaskRequest $request)
     {
-        $this->authorize('create', Task::class);
+        $this->authorize('create', [User::class, tenant()]);
 
         $this->taskAction->create($request);
 
@@ -49,7 +49,7 @@ class TaskController extends Controller
     public function show($taskId)
     {
         $task = Task::withTrashed()->with('assignedTo.profile')->findOrFail($taskId);
-        $this->authorize('view', $task);
+        $this->authorize('view', [$task, tenant()]);
 
         return Inertia::render('Tasks/Partials/TaskDetails', [
             'task' => $task->load('assignedTo.profile'),
@@ -62,7 +62,7 @@ class TaskController extends Controller
 
     public function update(TaskRequest $request, Task $task)
     {
-        $this->authorize('update', $task);
+        $this->authorize('update', [$task, tenant()]);
 
         $this->taskAction->update($task, $request);
 
@@ -71,7 +71,7 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        $this->authorize('delete', $task);
+        $this->authorize('delete', [$task, tenant()]);
 
         $this->taskAction->delete($task);
 
@@ -82,7 +82,7 @@ class TaskController extends Controller
     {
         $task = Task::withTrashed()->findOrFail($taskId);
 
-        $this->authorize('restore', $task);
+        $this->authorize('restore', [$task, tenant()]);
 
         $this->taskAction->restore($task);
 

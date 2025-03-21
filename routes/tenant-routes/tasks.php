@@ -7,4 +7,4 @@ Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
 Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
 Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
 Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-Route::put('/tasks/{task}', [TaskController::class, 'restore'])->name('tasks.restore');
+Route::patch('/tasks/{task}', [TaskController::class, 'restore'])->name('tasks.restore');

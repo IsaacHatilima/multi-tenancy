@@ -15,7 +15,7 @@ function UpdateTask({ task }: { task: Task }) {
     const { data, setData, errors, put } = useForm({
         assigned_to: String(task.assigned_to.id),
         priority: task.priority,
-        escalation: task.escalation,
+        escalation: task.escalation != null ? task.escalation : '',
         status: task.status,
         title: task.title,
         description: task.description,
@@ -62,7 +62,7 @@ function UpdateTask({ task }: { task: Task }) {
     const handleRestore: FormEventHandler = (e) => {
         e.preventDefault();
         open();
-        router.put(
+        router.patch(
             route('tasks.restore', task.id),
             {},
             {
