@@ -34,7 +34,7 @@ Route::middleware([
         Route::delete('/delete-user/{user}', [UsersController::class, 'destroy'])->name('users.destroy');
         Route::delete('/toggle-user-status/{user}', [UsersController::class, 'toggle_status'])->name('users.toggle');
 
-        require __DIR__.'/tenant_routes/tasks.php';
+        require __DIR__.'/tenant-routes/tasks.php';
     });
 
     require __DIR__.'/guest-common.php';
